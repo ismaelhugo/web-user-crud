@@ -1,0 +1,118 @@
+body{
+    background-color:royalblue;
+}
+
+.container{
+    position: absolute;
+    display: flex;
+    background-color:royalblue;
+    height: 100vh;
+    width: 100vw;
+}
+
+header{
+    height: 4vh;
+    width: 100vw;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10px;
+}
+
+h3{
+    margin-left: 15px;
+}
+
+.nav_links{
+    list-style: none;
+}
+
+.nav_links li{
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.nav_links li a{
+    transition: all 0.3s ease 0s;
+    text-decoration: none;
+    color: royalblue;
+    font-size: 20px;
+}
+
+.nav_links li a:hover{
+    color: black;
+}
+
+.nav_links li button{
+    width: 90%;
+    padding: 0;
+    margin: 20px;
+}
+
+.search{
+    position: absolute;
+    display: flex;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+    height: 20vh;
+    width: 70vw;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+}
+
+.search h3{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    margin-top: 20px;
+    font-size: 24px;
+}
+
+.search .form-search{
+    display: flex;
+    position: absolute;
+    top: 20%;
+    width: 100%;
+    height: 50%;
+}
+
+.search .form-search input{
+    position: absolute;
+    margin-left: 0%;
+    left: 20%;
+    top: 30%;
+    margin-right: 0;
+    padding: 0;
+    width: 50%;
+    border-radius: 0%;
+}
+
+.search .form-search button{
+    position: absolute;
+    top: 30%;
+    left: 70%;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+    width: 10vw;
+    border-radius: 0%;
+    height: 49px;
+}
+
+.users{
+    position: absolute;
+    display: flex;
+    left: 50%;
+    top: 80%;
+    transform: translate(-50%, -50%);
+    height: 70vh;
+    width: 70vw;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+}
