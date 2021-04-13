@@ -11,7 +11,8 @@ app.use(bodyParser.json);
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "BDe:1RcS:uMG"
+  password: "BDe:1RcS:uMG",
+  database: 'web1'
 });
 
 con.connect(function(err) {
@@ -21,6 +22,11 @@ con.connect(function(err) {
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
+
+  con.query('select * from usuario', function(err, result){
+    res.send(result)
+    console.log(err)
+  })
 })
 
 app.listen(port, () => {
