@@ -2,22 +2,19 @@ const express = require('express')
 const app = express()
 const port = 3000
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
+const connection = require('./bd')
 
+const cors = require('cors')
+
+const routes = require('./routes')
+
+app.use(cors())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-
-  var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "BDe123",
-    database: "web1"
-  });
-
-  con.query('select * from usuario', function(err, result){
+  connection.query('select * from usuario', function(err, result){
     res.send(result)
     
     if (err) console.log(err);
