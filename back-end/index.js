@@ -1,28 +1,22 @@
 const express = require('express')
 const app = express()
 const port = 3000
-const bodyParser = require('body-parser');
-const mysql = require('mysql');
-
+const bodyParser = require('body-parser')
+const connection = require('./bd')
+const cors = require('cors')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(cors())
 
-app.get('/', (req, res) => {
+app.get('/listar-usuarios', (req, res) => {
 
-  var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "toor",
-    database: "web"
-  });
-
-  con.query('select * from usuario', function(err, result){
-    res.send(result)
-    console.log(err)
+  connection.query('select * from usuario', function(err, result){
+    res.json(result)
   })
+
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Rodando em: http://localhost:${port}`)
 })
