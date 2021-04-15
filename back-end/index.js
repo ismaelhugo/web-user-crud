@@ -12,6 +12,7 @@ app.use(cors())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(cors())
 
 app.get('/', (req, res) => {
   connection.query('select * from usuario', function(err, result){
@@ -19,8 +20,9 @@ app.get('/', (req, res) => {
     
     if (err) console.log(err);
   })
+
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Rodando em: http://localhost:${port}`)
 })
