@@ -3,7 +3,9 @@ import * as userController from './controllers/userController'
 
 const router = Router();
 
-router.get('/listar-usuarios', userController.list)
-router.post('/cadastrar', userController.create)
+router.post('/cadastrar', userController.create);
+router.post('/editar-perfil', userController.editProfile);
+router.get('/listar-usuarios/:name', userController.list);
 
-export default router
+
+export default router;
