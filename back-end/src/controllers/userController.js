@@ -396,4 +396,4 @@ const updateProfile = async function (req, res) {
 }
 
 
-export { create, list, updateProfile, createUser }
+export { list, updateProfile, createUser }
