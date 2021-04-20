@@ -1,5 +1,4 @@
-// Função para verificar se um cpf já existe no bd
-
+/* Função para verificar se um cpf já existe no bd */
 import connection from "../bd";
 
 export default async function cpfAlreadyExists(cpf) {
