@@ -2,36 +2,6 @@ const connection = require('../bd');
 var bcrypt = require('bcryptjs');
 import resources from '../resources';
 
-/*
-const create = async function (req, res) {
-    const usuario = {
-        nome: req.body.nome,
-        email: req.body.email,
-        senha: req.body.senha,
-        fone: req.body.fone,
-        data_nasc: req.body.data_nasc,
-        cpf: req.body.cpf,
-    };
-
-    connection.query('INSERT INTO usuario (nome, email, senha, fone, data_nasc, cpf ) VALUES (?, ?, ?, ?, ?, ?)',
-        [usuario.nome, usuario.email, usuario.senha, usuario.fone, usuario.data_nasc, usuario.cpf],
-        (err, result) => {
-            if (err) {
-                return res.status(500).send({
-                    error: err,
-                    response: null
-                })
-            }
-
-            res.status(201).send({
-                mensagem: 'Criado com sucesso',
-                response: result
-            })
-        }
-    )
-}
-*/
-
 // Criar Usuário
 const createUser = async function (req, res) {
     try {
@@ -395,5 +365,32 @@ const updateProfile = async function (req, res) {
     }
 }
 
+// Login
+const login = async function (req, res) {
 
-export { list, updateProfile, createUser }
+    var email = req.body.email
+    var senha = req.body.senha
+
+    if (email && senha) {
+        connection.query('SELECT * FROM usuario WHERE email = ?', [email], function (err, results, fields) {
+            console.log(results)
+            if (results[0].senha) {
+                bcrypt.compare(senha, results[0].senha, function (error, result) {
+                    if (result) {
+                        return res.send(results[0]);
+                    }
+                    else {
+                        return res.status(400).send({
+                            "mensagem": "Nenhum usuario encontrado com essas credenciais"
+                        });
+                    }
+                })
+            }
+        });
+    } else {
+        res.send('Campos vazios');
+        res.end();
+    }
+}
+
+export { list, updateProfile, createUser, login }
