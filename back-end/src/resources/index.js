@@ -11,12 +11,12 @@ import phoneValidation from './phoneValidation';
 
 const resources = {
   birthdateValidation: birthdateValidation,
-  emailValidation: emailValidation,
+  check_valid_email: emailValidation,
   passwordValidation: passwordValidation,
   phoneValidation: phoneValidation,
   cpfValidation: cpfValidation,
   cpfAlreadyExists: cpfAlreadyExists,
-  emailAlreadyExists: emailAlreadyExists,
+  find_email: emailAlreadyExists,
 }
 
 export default resources;

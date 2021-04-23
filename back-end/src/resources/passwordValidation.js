@@ -5,11 +5,19 @@
 const validPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,20}$/
 
 export default function passwordValidation(password) {
-  if (!password || password == '') {
-    return new Error({
-      message: 'Senha inválida'
-    });
-  } else {
-    return validPassword.test(password)
-  };
+  try {
+    console.log(`entrou em senha -> ${password}`);
+    if (!password || password == '') {
+      console.log('!password');
+      return false;
+
+    } else {
+      let valid = validPassword.test(password);
+      console.log(`validPass -> ${valid}`);
+
+      return valid;
+    };
+  } catch (error) {
+    return error;
+  }
 }
