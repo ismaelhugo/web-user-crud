@@ -13,10 +13,7 @@ export default async function cpfAlreadyExists(cpf) {
         if (err) {
           return err;
         } else {
-          if (!found_cpf) {
-            return false;
-
-          } else return true;
+          console.log(found_cpf)
         };
       }
     );
