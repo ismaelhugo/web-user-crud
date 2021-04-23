@@ -1,52 +1,71 @@
-h2{
-    margin-top: 16px
-}
-
-p{
-    margin-top: 10px;
-}
-
-.container{
-    position: absolute;
-    background-color:royalblue;
-    height: 100vh;
-    width: 100vw;
-}
-
-button{
-    margin-left: 25%;
-}
-
-button#cadastrar{
-    background-color: rgb(255, 255, 255);
-    color: royalblue;
-}
-
-button#cadastrar:hover{
-    background-color: rgba(65, 105, 225, 0.3);
-    color: royalblue;
-}
-
-hr.solid {
-    border-top: 3px solid #bbb;
-    width: 90%;
-    margin: 5px 5%;
-}
-
+h2{ margin-top: 16px }
+p { margin-top: 10px; }
 input{
-    width: 500px;
+    width: 80%;
     margin-top: 14px;
 }
 
-.center{
-    position: absolute;
-    display: block;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    height: 80vh;
-    width: 60vh;
-    background-color: rgb(255, 255, 255);
-    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
+button{
+  margin: 50px 0;
+  background-color: rgb(255, 255, 255);
+  color: royalblue;
+}
+
+button:hover{
+  background-color: rgba(65, 105, 225, 0.3);
+  color: royalblue;
+}
+
+hr.solid {
+  border-top: 3px solid #bbb;
+  width: 90%;
+  margin: 5px 5%;
+}
+
+/* MOBILE FIRST */
+@media (min-width: 320px) {
+  .container{
+      position: absolute;
+      background-color: royalblue;
+      height: 100vh;
+      width: 100vw;
+  }
+  .center{
+      position: absolute;
+      display: block;
+      top: 5vh;
+      margin: 4vh;
+      height: 80vh;
+      width: 80vw;
+      background-color: rgb(255, 255, 255);
+      box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+  }
+}
+
+@media (min-width: 411px) {
+
+}
+
+@media (min-width: 768px) {
+  .center{
+    width: 90vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .center{
+    top: -18vh;
+    margin: 15vw;
+    width: 70vw;
+  }
+}
+
+@media (min-width: 1440px) {
+  /*.center{
+    top: -10vh;
+    margin: 20vw;
+    width: 60vw;
+    height: 50vw;
+  }*/
 }

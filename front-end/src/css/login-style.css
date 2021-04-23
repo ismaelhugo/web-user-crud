@@ -3,15 +3,17 @@ h2{
 }
 
 .container{
-    position: absolute;
+    display:flex;
     background-color:royalblue;
     height: 100vh;
     width: 100vw;
+    justify-content: center;
+    align-items: center;
 }
 
 button{
-    margin-left: 25%;
-}
+    margin: 10px 0;
+    }
 
 button#cadastrar{
     background-color: rgb(255, 255, 255);
@@ -30,16 +32,16 @@ hr.solid {
 }
 
 .center{
-    position: absolute;
-    display: block;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    display:flex;
+    justify-content: center;
+    align-items: center;
     height: 40vh;
     width: 50vh;
     background-color: rgb(255, 255, 255);
     box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
     border-radius: 15px;
+    flex-direction: column;
+    padding: 50px;
 }
 
 a{
@@ -50,4 +52,10 @@ p{
     margin-top: 30px;
     text-align: center;
     font-size: 18px;
+}
+input{
+    width: 95%;
+    height: 15%;
+    margin: 10px 20px;
+
 }
