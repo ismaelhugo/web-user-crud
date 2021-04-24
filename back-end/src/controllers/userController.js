@@ -21,88 +21,134 @@ const createUser = async function (req, res) {
             })
 
         } else {
-            /* Email */
-            const valid_email = await resources.check_valid_email(newUser.email); // validar email
-            const email_found = resources.find_email(newUser.email); // verificar se o email é único
+            /* Senha */
+            const valid_password = ((newUser.password).toString().length > 5); // senha precisa ter mais de 5 caracteres
+            let hashPassword = '';
 
-            if (!valid_email || email_found == true) {
-                console.log(`valid_email: ${valid_email} || email_found: ${email_found} `)
+            if (!valid_password) {
                 return res.status(400).send({
-                    message: 'Email inválido',
+                    message: 'Senha inválida',
                     response: null
                 })
+
             } else {
-                console.log(`else`)
-                /* Senha */
-                const valid_password = await resources.passwordValidation(info.password) // validar senha
-                let hashPassword = '';
+                // passando a senha para Hash
 
-                if (!valid_password) {
-                    return res.status(400).send({
-                        message: 'Senha inválida',
-                        response: null
-                    })
-                } else {
-                    // passando a senha para Hash
-                    if (info.password !== '') {
-                        hashPassword = await bcrypt.hash(info.password, 10)
-                    }
-                }
-
-                console.log(`hash: ${hashPassword}`);
-
-                /* Telefone */
-                const valid_phone = resources.phoneValidation(info.phone) // validar telefone 
-
-                if (!valid_phone) {
-                    return res.status(400).send({
-                        message: 'Telefone inválido',
-                        response: null
-                    })
-                } else {
-                    /* Data de Nascimento */
-                    const valid_birthdate = resources.birthdateValidation(info.birthdate) // validar data de nascimento 
-
-                    if (!valid_birthdate) {
-                        return res.status(400).send({
-                            message: 'Data de Nascimento inválida',
-                            response: null
-                        })
-                    } else {
-                        /* CPF */
-                        const valid_cpf = resources.cpfValidation(newUser.cpf) // validar cpf
-                        const find_cpf = resources.cpfAlreadyExists(newUser.cpf) // verificar se o cpf é único
-
-                        if (!valid_cpf || find_cpf) {
-                            return res.status(400).send({
-                                message: 'CPF inválido',
-                                response: null
-                            })
-
-                        } else {
-                            // se chegou até aqui, todos os dados são válidos e eu posso criar o usuário
-                            connection.query('INSERT INTO usuario (nome, email, senha, fone, data_nasc, cpf ) VALUES (?, ?, ?, ?, ?, ?)',
-                                [newUser.name, newUser.email, hashPassword, newUser.phone, newUser.birthdate, newUser.cpf],
-                                (err, result) => {
-                                    if (err) {
-                                        return res.status(500).send({
-                                            error: err,
-                                            response: null
-                                        })
-                                    }
-
-                                    return res.status(201).send({
-                                        message: 'Criado com sucesso',
-                                        response: result
-                                    })
-                                }
-                            )
-                        }
-
-                    }
+                if (newUser.password !== '') {
+                    hashPassword = await bcrypt.hash(newUser.password, 10);
+                    console.log(`hash: ${hashPassword}`);
                 }
             }
+
+            /* Email */
+            // validar email
+            const valid_email = await resources.check_valid_email(newUser.email);
+            if (!valid_email) {
+                return res.status(400).send({
+                    message: 'Email inválido'
+                });
+
+            } else {
+                // se o email é válido, eu verifico se o email é único
+                connection.query('SELECT * FROM usuario WHERE email = (?)',
+                    [newUser.email],
+                    (err, found_email) => {
+
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                message: 'Erro ao verificar a exclusividade do email'
+                            });
+
+                        } else {
+                            if (found_email.length > 0) {
+                                return res.status(400).send({
+                                    message: 'O email já está associado a outro usuário'
+                                });
+                            } else {
+                                // o email é único
+                                /* Telefone */
+                                const valid_phone = resources.phoneValidation(newUser.phone) // validar telefone
+
+                                if (!valid_phone) {
+                                    return res.status(400).send({
+                                        message: 'Telefone inválido',
+                                        response: null
+                                    })
+
+                                } else {
+                                    /* Data de Nascimento */
+                                    const valid_birthdate = resources.birthdateValidation(newUser.birthdate) // validar data de nascimento 
+
+                                    if (!valid_birthdate || valid_birthdate == '') {
+                                        return res.status(400).send({
+                                            message: 'Data de Nascimento inválida',
+                                            response: null
+                                        })
+
+                                    } else {
+                                        /* CPF */
+                                        // tirar outros caracteres, deixa só os números
+                                        const cpf = newUser.cpf.toString().replace(/[^\d]+/g, '');
+
+                                        const valid_cpf = resources.cpfValidation(cpf) // validar cpf
+
+                                        if (!valid_cpf) {
+                                            return res.status(400).send({
+                                                message: 'CPF inválido',
+                                                response: null
+                                            })
+
+                                        } else {
+                                            // se o cpf é válido, verifico se é único no banco
+
+                                            connection.query('SELECT * FROM usuario WHERE cpf = (?)',
+                                                [cpf],
+                                                (err, found_cpf) => {
+                                                    if (err) {
+                                                        return res.status(500).send({
+                                                            error: err,
+                                                            message: 'Erro ao verificar a exclusividade do cpf'
+                                                        })
+                                                    } else {
+                                                        if (found_cpf.length > 0) {
+                                                            return res.status(400).send({
+                                                                message: 'O cpf inserido já está associado a outro usuário.'
+                                                            })
+                                                        } else {
+                                                            // se chegou até aqui, todos os dados são válidos e eu posso criar o usuário
+                                                            connection.query('INSERT INTO usuario (nome, email, senha, fone, data_nasc, cpf) VALUES (?, ?, ?, ?, ?, ?)',
+                                                                [newUser.name, newUser.email, hashPassword, newUser.phone, valid_birthdate, cpf],
+                                                                (err, result) => {
+                                                                    if (err) {
+                                                                        return res.status(500).send({
+                                                                            error: err
+                                                                        })
+                                                                    } else {
+                                                                        return res.status(201).send({
+                                                                            message: 'Criado com sucesso',
+                                                                            response: result,
+                                                                        })
+                                                                    }
+                                                                }
+                                                            )
+                                                        }
+                                                    }
+                                                })
+
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        };
+                    }
+                );
+
+            }
         }
+
     } catch (error) {
         return res.status(500).send({
             error: error,
@@ -126,7 +172,7 @@ const list = async function (req, res) {
                 })
             }
 
-            res.json(result)
+            return res.json(result)
         })
 
     } else {
@@ -375,7 +421,6 @@ const login = async function (req, res) {
 
     if (email && senha) {
         connection.query('SELECT * FROM usuario WHERE email = ?', [email], function (err, results, fields) {
-            console.log(results)
             if (results[0].senha) {
                 bcrypt.compare(senha, results[0].senha, function (error, result) {
                     if (result) {

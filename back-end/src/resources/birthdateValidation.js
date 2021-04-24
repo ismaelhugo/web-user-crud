@@ -1,10 +1,6 @@
 /* Função para validar a data de nascimento */
 
-// não sei se essa está funcionando, pq peguei pronta de um outro projeto meu
-// e tem que ver o formato do SQL
-
-//expressão regular para o formato da data de nascimento (AAAA/MM/DD)
-const validForm = /^\d{4}-\d{2}-\d{2}$/
+// const validForm = /^\d{4}-\d{2}-\d{2}$/
 
 export default function BirthdateValidation(birthdate) {
   if (!birthdate || birthdate == '') {
@@ -12,15 +8,15 @@ export default function BirthdateValidation(birthdate) {
       message: 'Data de Nascimento inválida'
     });
   } else {
-    const ageLimit = {
-      max: 110,
-      min: 15
+    let arr = birthdate.split('/');
+
+    let currentYear = parseInt(new Date().getFullYear())    
+
+    if (!(currentYear == arr[2]) && !(currentYear - arr[2] > 110)) {
+      let newBirthdate = `${arr[2]}-${arr[1]}-${arr[0]}`;
+      return newBirthdate;
     }
 
-    const date = new Date(birthdate);
-    const year = parseInt(date.getFullYear());
-    const currentYear = parseInt(new Date().getFullYear());
-
-    return validForm.test(date.toISOString().slice(0,10)) && (currentYear - year >= ageLimit.min && currentYear - year <= ageLimit.maxs);
+    return false;
   };
 }
