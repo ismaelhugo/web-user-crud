@@ -202,208 +202,213 @@ const list = async function (req, res) {
 // Editar Perfil
 const updateProfile = async function (req, res) {
     try {
-        const info = {
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            phone: req.body.phone,
-            birthdate: req.body.birthdate,
-            cpf: req.body.cpf,
-        }
+        const user = req.user;
 
-        let updated = false
+        console.log(user);
 
-        /* *TO-DO* a gente precisa fazer a questão da sessão, pq precisamos saber qual o user que está sendo atualizado,
-            ou seja, pegar a ID do usuario. podemos pegar pela url alguma coisa que não seja sensível (acho que a id do usário
-            não tem problema)
-        */
+        return res.send(user);
+        // const info = {
+        //     name: req.body.name,
+        //     email: req.body.email,
+        //     password: req.body.password,
+        //     phone: req.body.phone,
+        //     birthdate: req.body.birthdate,
+        //     cpf: req.body.cpf,
+        // }
 
-        /* Nome */
-        if (info.name && info.name != ' ') {
-            // tirar os caracteres especiais
-            let name = info.name.toString().replace(/\D/g, '')
+        // let updated = false
 
-            connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
-                [name,],
-                (err, result) => {
-                    if (err) {
-                        return res.status(500).send({
-                            error: err,
-                            response: null
-                        })
-                    }
+        // /* *TO-DO* a gente precisa fazer a questão da sessão, pq precisamos saber qual o user que está sendo atualizado,
+        //     ou seja, pegar a ID do usuario. podemos pegar pela url alguma coisa que não seja sensível (acho que a id do usário
+        //     não tem problema)
+        // */
 
-                    // se chegou até aqui, atualizou o usuário!
-                    updated = true
-                }
-            )
-        }
+        // /* Nome */
+        // if (info.name && info.name != ' ') {
+        //     // tirar os caracteres especiais
+        //     let name = info.name.toString().replace(/\D/g, '')
 
-        /* Email */
-        if (info.email && info.email != ' ') {
-            // validação do email
-            const valid_email = resources.emailValidation(info.email)
+        //     connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
+        //         [name,],
+        //         (err, result) => {
+        //             if (err) {
+        //                 return res.status(500).send({
+        //                     error: err,
+        //                     response: null
+        //                 })
+        //             }
 
-            const find_email = resources.emailAlreadyExists(info.email)
+        //             // se chegou até aqui, atualizou o usuário!
+        //             updated = true
+        //         }
+        //     )
+        // }
 
-            if (valid_email || !find_email) {
-                connection.query('UPDATE usuario SET email = (?) WHERE id_usuario = (?)',
-                    [info.email],
-                    // [ID do usuario],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: err,
-                                response: null
-                            })
-                        }
+        // /* Email */
+        // if (info.email && info.email != ' ') {
+        //     // validação do email
+        //     const valid_email = resources.emailValidation(info.email)
 
-                        // se chegou até aqui, atualizou o usuário!
-                        updated = true
-                    }
-                )
+        //     const find_email = resources.emailAlreadyExists(info.email)
 
-            } else {
-                return res.status(400).send({
-                    message: 'Email inválido'
-                })
-            }
-        }
+        //     if (valid_email || !find_email) {
+        //         connection.query('UPDATE usuario SET email = (?) WHERE id_usuario = (?)',
+        //             [info.email],
+        //             // [ID do usuario],
+        //             (err, result) => {
+        //                 if (err) {
+        //                     return res.status(500).send({
+        //                         error: err,
+        //                         response: null
+        //                     })
+        //                 }
 
-        /* Senha */
-        if (info.password && info.password != ' ') {
-            // validação da senha
-            const valid_password = resources.passwordValidation(info.password)
+        //                 // se chegou até aqui, atualizou o usuário!
+        //                 updated = true
+        //             }
+        //         )
 
-            if (valid_password) {
-                // passar a senha para Hash
-                let hashPassword;
-                if (info.password !== '') {
-                    hashPassword = await bcrypt.hash(info.password, 10)
-                }
+        //     } else {
+        //         return res.status(400).send({
+        //             message: 'Email inválido'
+        //         })
+        //     }
+        // }
 
-                connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
-                    [hashPassword],
-                    // [ID do usuario],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: err,
-                                response: null
-                            })
-                        }
+        // /* Senha */
+        // if (info.password && info.password != ' ') {
+        //     // validação da senha
+        //     const valid_password = resources.passwordValidation(info.password)
 
-                        // se chegou até aqui, atualizou o usuário!
-                        updated = true
-                    }
-                )
+        //     if (valid_password) {
+        //         // passar a senha para Hash
+        //         let hashPassword;
+        //         if (info.password !== '') {
+        //             hashPassword = await bcrypt.hash(info.password, 10)
+        //         }
 
-            } else {
-                return res.status(400).send({
-                    message: 'Senha inválida'
-                })
-            }
-        }
+        //         connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
+        //             [hashPassword],
+        //             // [ID do usuario],
+        //             (err, result) => {
+        //                 if (err) {
+        //                     return res.status(500).send({
+        //                         error: err,
+        //                         response: null
+        //                     })
+        //                 }
 
-        /* Telefone */
-        if (info.phone && info.phone != ' ') {
-            // validação do telefone
-            const valid_phone = resources.phoneValidation(info.phone)
+        //                 // se chegou até aqui, atualizou o usuário!
+        //                 updated = true
+        //             }
+        //         )
 
-            if (valid_phone) {
-                connection.query('UPDATE usuario SET fone = (?) WHERE id_usuario = (?)',
-                    [info.phone],
-                    // [ID do usuario],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: err,
-                                response: null
-                            })
-                        }
+        //     } else {
+        //         return res.status(400).send({
+        //             message: 'Senha inválida'
+        //         })
+        //     }
+        // }
 
-                        // se chegou até aqui, atualizou o usuário!
-                        updated = true
-                    }
-                )
+        // /* Telefone */
+        // if (info.phone && info.phone != ' ') {
+        //     // validação do telefone
+        //     const valid_phone = resources.phoneValidation(info.phone)
 
-            } else {
-                return res.status(400).send({
-                    message: 'Telefone inválido'
-                })
-            }
-        }
+        //     if (valid_phone) {
+        //         connection.query('UPDATE usuario SET fone = (?) WHERE id_usuario = (?)',
+        //             [info.phone],
+        //             // [ID do usuario],
+        //             (err, result) => {
+        //                 if (err) {
+        //                     return res.status(500).send({
+        //                         error: err,
+        //                         response: null
+        //                     })
+        //                 }
 
-        /* Data de Nascimento */
-        if (info.birthdate && info.birthdate != ' ') {
-            // validação da data de nascimento
-            const valid_birthdate = resources.birthdateValidation(info.birthdate)
+        //                 // se chegou até aqui, atualizou o usuário!
+        //                 updated = true
+        //             }
+        //         )
 
-            if (valid_birthdate) {
-                connection.query('UPDATE usuario SET data_nasc = (?) WHERE id_usuario = (?)',
-                    [info.birthdate],
-                    // [ID do usuario],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: err,
-                                response: null
-                            })
-                        }
+        //     } else {
+        //         return res.status(400).send({
+        //             message: 'Telefone inválido'
+        //         })
+        //     }
+        // }
 
-                        // se chegou até aqui, atualizou o usuário!
-                        updated = true
-                    }
-                )
+        // /* Data de Nascimento */
+        // if (info.birthdate && info.birthdate != ' ') {
+        //     // validação da data de nascimento
+        //     const valid_birthdate = resources.birthdateValidation(info.birthdate)
 
-            } else {
-                return res.status(400).send({
-                    message: 'Data de Nascimento inválida'
-                })
-            }
-        }
+        //     if (valid_birthdate) {
+        //         connection.query('UPDATE usuario SET data_nasc = (?) WHERE id_usuario = (?)',
+        //             [info.birthdate],
+        //             // [ID do usuario],
+        //             (err, result) => {
+        //                 if (err) {
+        //                     return res.status(500).send({
+        //                         error: err,
+        //                         response: null
+        //                     })
+        //                 }
 
-        /* CPF */
-        if (info.cpf && info.cpf != ' ') {
-            // validação do cpf
-            const valid_cpf = resources.cpfValidation(info.cpf)
+        //                 // se chegou até aqui, atualizou o usuário!
+        //                 updated = true
+        //             }
+        //         )
 
-            // verificar no bd se o cpf já existe no bd
-            const find_cpf = resources.cpfAlreadyExists(info.cpf)
+        //     } else {
+        //         return res.status(400).send({
+        //             message: 'Data de Nascimento inválida'
+        //         })
+        //     }
+        // }
 
-            if (valid_cpf && !find_cpf) {
-                // cpf é válido e não existe no bd
-                connection.query('UPDATE usuario SET cpf = (?) WHERE id_usuario = (?)',
-                    [info.cpf],
-                    // [ID do usuario],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: err,
-                                response: null
-                            })
-                        }
+        // /* CPF */
+        // if (info.cpf && info.cpf != ' ') {
+        //     // validação do cpf
+        //     const valid_cpf = resources.cpfValidation(info.cpf)
 
-                        // se chegou até aqui, atualizou o usuário!
-                        updated = true
-                    }
-                )
+        //     // verificar no bd se o cpf já existe no bd
+        //     const find_cpf = resources.cpfAlreadyExists(info.cpf)
 
-            } else {
-                return res.status(400).send({
-                    message: 'O cpf inserido não é válido'
-                })
-            }
-        }
+        //     if (valid_cpf && !find_cpf) {
+        //         // cpf é válido e não existe no bd
+        //         connection.query('UPDATE usuario SET cpf = (?) WHERE id_usuario = (?)',
+        //             [info.cpf],
+        //             // [ID do usuario],
+        //             (err, result) => {
+        //                 if (err) {
+        //                     return res.status(500).send({
+        //                         error: err,
+        //                         response: null
+        //                     })
+        //                 }
+
+        //                 // se chegou até aqui, atualizou o usuário!
+        //                 updated = true
+        //             }
+        //         )
+
+        //     } else {
+        //         return res.status(400).send({
+        //             message: 'O cpf inserido não é válido'
+        //         })
+        //     }
+        // }
 
 
-        if (updated) {
-            return res.status(200).send({
-                error: null,
-                message: 'Atualizado com sucesso',
-                response: null
-            })
-        }
+        // if (updated) {
+        //     return res.status(200).send({
+        //         error: null,
+        //         message: 'Atualizado com sucesso',
+        //         response: null
+        //     })
+        // }
 
     } catch (error) {
         return res.status(500).send({
