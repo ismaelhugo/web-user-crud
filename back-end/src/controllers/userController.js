@@ -22,7 +22,8 @@ const createUser = async function (req, res) {
 
         } else {
             /* Senha */
-            const valid_password = ((newUser.password).toString().length > 5); // senha precisa ter mais de 5 caracteres
+            // validar senha ->  precisa ter pelo menos 5 caracteres
+            const valid_password = ((newInfo.password).toString().length >= 5);
             let hashPassword = '';
 
             if (!valid_password) {
@@ -31,18 +32,15 @@ const createUser = async function (req, res) {
                     response: null
                 })
 
-            } else {
-                // passando a senha para Hash
-
-                if (newUser.password !== '') {
-                    hashPassword = await bcrypt.hash(newUser.password, 10);
-                    console.log(`hash: ${hashPassword}`);
-                }
             }
+
+            // a senha é válida! passar a senha para Hash:
+            hashPassword = await bcrypt.hash(newUser.password, 10);
+            console.log(`hash: ${hashPassword}`);
 
             /* Email */
             // validar email
-            const valid_email = await resources.check_valid_email(newUser.email);
+            const valid_email = await resources.emailValidation(newUser.email);
             if (!valid_email) {
                 return res.status(400).send({
                     message: 'Email inválido'
@@ -50,7 +48,9 @@ const createUser = async function (req, res) {
 
             } else {
                 // se o email é válido, eu verifico se o email é único
-                connection.query('SELECT * FROM usuario WHERE email = (?)',
+
+                // por fins de segurança, eu não pego nenhum dado do usuario, a não ser o email
+                connection.query('SELECT email FROM usuario WHERE email = (?)',
                     [newUser.email],
                     (err, found_email) => {
 
@@ -63,10 +63,11 @@ const createUser = async function (req, res) {
                         } else {
                             if (found_email.length > 0) {
                                 return res.status(400).send({
-                                    message: 'O email já está associado a outro usuário'
+                                    message: 'O email já está cadastrado no sistema'
                                 });
                             } else {
                                 // o email é único
+
                                 /* Telefone */
                                 const valid_phone = resources.phoneValidation(newUser.phone) // validar telefone
 
@@ -101,8 +102,8 @@ const createUser = async function (req, res) {
 
                                         } else {
                                             // se o cpf é válido, verifico se é único no banco
-
-                                            connection.query('SELECT * FROM usuario WHERE cpf = (?)',
+                                            // por fins de segurança, eu não pego nenhum dado do usuario, a não ser o cpf
+                                            connection.query('SELECT cpf FROM usuario WHERE cpf = (?)',
                                                 [cpf],
                                                 (err, found_cpf) => {
                                                     if (err) {
@@ -113,7 +114,7 @@ const createUser = async function (req, res) {
                                                     } else {
                                                         if (found_cpf.length > 0) {
                                                             return res.status(400).send({
-                                                                message: 'O cpf inserido já está associado a outro usuário.'
+                                                                message: 'O cpf já está cadastrado no sistema.'
                                                             })
                                                         } else {
                                                             // se chegou até aqui, todos os dados são válidos e eu posso criar o usuário
@@ -135,7 +136,7 @@ const createUser = async function (req, res) {
                                                         }
                                                     }
                                                 }
-                                                )
+                                            )
                                         }
 
                                     }
@@ -199,216 +200,265 @@ const list = async function (req, res) {
     }
 }
 
-// Editar Perfil
-const updateProfile = async function (req, res) {
+const updateUser = async function (req, res) {
     try {
-        const user = req.user;
+        // const user = req.user;
+        // console.log(`user: ${user}`);
 
-        console.log(user);
-
-        return res.send(user);
-        // const info = {
-        //     name: req.body.name,
-        //     email: req.body.email,
-        //     password: req.body.password,
-        //     phone: req.body.phone,
-        //     birthdate: req.body.birthdate,
-        //     cpf: req.body.cpf,
+        // verificar se o usuário está logado
+        // if (!user || user == null || typeof user == undefined) {
+        //     return res.status(401).send({
+        //         message: 'O usuário não está logado'
+        //     });
         // }
 
-        // let updated = false
+        // user de teste
+        const user = {
+            id: 1
+        }
 
-        // /* *TO-DO* a gente precisa fazer a questão da sessão, pq precisamos saber qual o user que está sendo atualizado,
-        //     ou seja, pegar a ID do usuario. podemos pegar pela url alguma coisa que não seja sensível (acho que a id do usário
-        //     não tem problema)
-        // */
+        const newInfo = {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            phone: req.body.phone,
+            birthdate: req.body.birthdate,
+            cpf: req.body.cpf,
+        }
 
-        // /* Nome */
-        // if (info.name && info.name != ' ') {
-        //     // tirar os caracteres especiais
-        //     let name = info.name.toString().replace(/\D/g, '')
+        console.log(`name: ${newInfo.name}`);
 
-        //     connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
-        //         [name,],
-        //         (err, result) => {
-        //             if (err) {
-        //                 return res.status(500).send({
-        //                     error: err,
-        //                     response: null
-        //                 })
-        //             }
+        /* Nome */
+        if (newInfo.name && newInfo.name != null && typeof newInfo.name != undefined) {
+            console.log(`atualizar nome`);
+            connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
+                [newInfo.name, user.id],
+                (err, result) => {
+                    console.log(`query atualizar nome`);
 
-        //             // se chegou até aqui, atualizou o usuário!
-        //             updated = true
-        //         }
-        //     )
-        // }
+                    if (err) {
+                        return res.status(500).send({
+                            error: err,
+                            message: 'Erro ao atualizar o nome.'
+                        })
 
-        // /* Email */
-        // if (info.email && info.email != ' ') {
-        //     // validação do email
-        //     const valid_email = resources.emailValidation(info.email)
+                    } else {
+                        console.log(`atualizou o nome!`);
+                        return;
+                    }
+                }
+            )
+        }
 
-        //     const find_email = resources.emailAlreadyExists(info.email)
+        /* Email */
+        if (newInfo.email && newInfo.email != null && typeof newInfo.email != undefined) {
+            console.log(`atualizar email`);
 
-        //     if (valid_email || !find_email) {
-        //         connection.query('UPDATE usuario SET email = (?) WHERE id_usuario = (?)',
-        //             [info.email],
-        //             // [ID do usuario],
-        //             (err, result) => {
-        //                 if (err) {
-        //                     return res.status(500).send({
-        //                         error: err,
-        //                         response: null
-        //                     })
-        //                 }
+            // validação do email
+            const valid_email = await resources.emailValidation(newInfo.email);
+            console.log(`valid_email: ${valid_email}`);
 
-        //                 // se chegou até aqui, atualizou o usuário!
-        //                 updated = true
-        //             }
-        //         )
+            if (!valid_email) {
+                return res.status(400).send({
+                    message: 'Email inválido'
+                });
 
-        //     } else {
-        //         return res.status(400).send({
-        //             message: 'Email inválido'
-        //         })
-        //     }
-        // }
+            } else {
+                // o email é valido. agora, verificar se o email é único
+                connection.query('SELECT email FROM usuario WHERE email = (?)',
+                    [newInfo.email],
+                    (err, found_email) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                message: 'Erro ao verificar a exclusividade do email'
+                            })
+                        } else {
+                            if (found_email.length > 0) {
+                                return res.status(400).send({
+                                    message: 'O email já está cadastrado no sistema.'
+                                })
+                            }
+                        }
+                    }
+                )
 
-        // /* Senha */
-        // if (info.password && info.password != ' ') {
-        //     // validação da senha
-        //     const valid_password = resources.passwordValidation(info.password)
+                // o email é válido e único. Agora, vou atualizar o usuário
+                connection.query('UPDATE usuario SET email = (?) WHERE id_usuario = (?)',
+                    [newInfo.email, user.id],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                response: null
+                            })
+                        } else {
+                            console.log(`atualizou o email!`);
+                            return;
+                        }
+                    }
+                )
+            }
+        }
 
-        //     if (valid_password) {
-        //         // passar a senha para Hash
-        //         let hashPassword;
-        //         if (info.password !== '') {
-        //             hashPassword = await bcrypt.hash(info.password, 10)
-        //         }
+        /* Senha */
+        if (newInfo.password && newInfo.password != null && typeof newInfo.password != undefined) {
+            console.log(`atualizar senha`);
 
-        //         connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
-        //             [hashPassword],
-        //             // [ID do usuario],
-        //             (err, result) => {
-        //                 if (err) {
-        //                     return res.status(500).send({
-        //                         error: err,
-        //                         response: null
-        //                     })
-        //                 }
+            // validar senha ->  precisa ter pelo menos 5 caracteres
+            const valid_password = ((newInfo.password).toString().length >= 5);
+            let hashPassword = '';
 
-        //                 // se chegou até aqui, atualizou o usuário!
-        //                 updated = true
-        //             }
-        //         )
+            if (!valid_password) {
+                return res.status(400).send({
+                    message: 'Senha inválida',
+                    response: null
+                })
 
-        //     } else {
-        //         return res.status(400).send({
-        //             message: 'Senha inválida'
-        //         })
-        //     }
-        // }
+            } else {
+                // a senha é válida! passar a senha para Hash:
+                hashPassword = await bcrypt.hash(newInfo.password, 10);
+                console.log(`hash: ${hashPassword}`);
 
-        // /* Telefone */
-        // if (info.phone && info.phone != ' ') {
-        //     // validação do telefone
-        //     const valid_phone = resources.phoneValidation(info.phone)
+                // atualizar o usuário
+                connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
+                    [hashPassword, user.id],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                message: 'Erro ao atualizar a senha.'
+                            })
 
-        //     if (valid_phone) {
-        //         connection.query('UPDATE usuario SET fone = (?) WHERE id_usuario = (?)',
-        //             [info.phone],
-        //             // [ID do usuario],
-        //             (err, result) => {
-        //                 if (err) {
-        //                     return res.status(500).send({
-        //                         error: err,
-        //                         response: null
-        //                     })
-        //                 }
+                        } else {
+                            console.log(`atualizou a senha!`);
+                            return;
+                        }
+                    }
+                )
 
-        //                 // se chegou até aqui, atualizou o usuário!
-        //                 updated = true
-        //             }
-        //         )
+            }
+        }
 
-        //     } else {
-        //         return res.status(400).send({
-        //             message: 'Telefone inválido'
-        //         })
-        //     }
-        // }
+        /* Telefone */
+        if (newInfo.phone && newInfo.phone != null && typeof newInfo.phone != undefined) {
+            console.log(`atualizar telefone`);
 
-        // /* Data de Nascimento */
-        // if (info.birthdate && info.birthdate != ' ') {
-        //     // validação da data de nascimento
-        //     const valid_birthdate = resources.birthdateValidation(info.birthdate)
+            // validação do telefone
+            const valid_phone = resources.phoneValidation(newInfo.phone);
 
-        //     if (valid_birthdate) {
-        //         connection.query('UPDATE usuario SET data_nasc = (?) WHERE id_usuario = (?)',
-        //             [info.birthdate],
-        //             // [ID do usuario],
-        //             (err, result) => {
-        //                 if (err) {
-        //                     return res.status(500).send({
-        //                         error: err,
-        //                         response: null
-        //                     })
-        //                 }
+            if (!valid_phone) {
+                return res.status(400).send({
+                    message: 'Telefone inválido',
+                    response: null
+                })
 
-        //                 // se chegou até aqui, atualizou o usuário!
-        //                 updated = true
-        //             }
-        //         )
+            } else {
+                // o telefone é válido! Agora, atualizar o usuário
+                connection.query('UPDATE usuario SET fone = (?) WHERE id_usuario = (?)',
+                    [newInfo.phone, user.id],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                response: null
+                            })
+                        } else {
+                            console.log(`atualizou o telefone!`);
+                            return;
+                        }
+                    }
+                )
+            }
+        }
 
-        //     } else {
-        //         return res.status(400).send({
-        //             message: 'Data de Nascimento inválida'
-        //         })
-        //     }
-        // }
+        /* Data de Nascimento */
+        if (newInfo.birthdate && newInfo.birthdate != null && typeof newInfo.birthdate != undefined) {
+            console.log(`atualizar data de nascimento`);
 
-        // /* CPF */
-        // if (info.cpf && info.cpf != ' ') {
-        //     // validação do cpf
-        //     const valid_cpf = resources.cpfValidation(info.cpf)
+            // verifica se a data é válida
+            const valid_birthdate = resources.birthdateValidation(newInfo.birthdate);
 
-        //     // verificar no bd se o cpf já existe no bd
-        //     const find_cpf = resources.cpfAlreadyExists(info.cpf)
+            if (!valid_birthdate) {
+                return res.status(400).send({
+                    message: 'Data de Nascimento inválida',
+                    response: null
+                })
+            } else {
+                // data de nascimento é válida! Agora, atualizar o usuário
+                connection.query('UPDATE usuario SET data_nasc = (?) WHERE id_usuario = (?)',
+                    [valid_birthdate, user.id],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                response: null
+                            })
+                        } else {
+                            console.log(`atualizou a data de nascimento!`);
+                            return;
+                        }
+                    }
+                )
+            }
+        }
 
-        //     if (valid_cpf && !find_cpf) {
-        //         // cpf é válido e não existe no bd
-        //         connection.query('UPDATE usuario SET cpf = (?) WHERE id_usuario = (?)',
-        //             [info.cpf],
-        //             // [ID do usuario],
-        //             (err, result) => {
-        //                 if (err) {
-        //                     return res.status(500).send({
-        //                         error: err,
-        //                         response: null
-        //                     })
-        //                 }
+        /* CPF */
+        if (newInfo.cpf && newInfo.cpf != null && typeof newInfo.cpf != undefined) {
+            console.log(`atualizar cpf`);
 
-        //                 // se chegou até aqui, atualizou o usuário!
-        //                 updated = true
-        //             }
-        //         )
+            // tirar outros caracteres, deixa só os números
+            const cpf = newInfo.cpf.toString().replace(/[^\d]+/g, '');
 
-        //     } else {
-        //         return res.status(400).send({
-        //             message: 'O cpf inserido não é válido'
-        //         })
-        //     }
-        // }
+            // validação do cpf
+            const valid_cpf = resources.cpfValidation(cpf);
 
+            if (!valid_cpf) {
+                return res.status(400).send({
+                    message: 'CPF inválido',
+                    response: null
+                })
+            } else {
+                // o cpf é válido! Agora, verificar se o cpf é único
+                connection.query('SELECT cpf FROM usuario WHERE cpf = (?)',
+                    [cpf],
+                    (err, found_cpf) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                message: 'Erro ao verificar a exclusividade do cpf'
+                            })
+                        } else {
+                            if (found_cpf.length > 0) {
+                                return res.status(400).send({
+                                    message: 'O cpf já está cadastrado no sistema.'
+                                })
+                            }
+                        }
+                    }
+                )
+    
+                // o cpf é válido e único! atualizar usuário
+                connection.query('UPDATE usuario SET cpf = (?) WHERE id_usuario = (?)',
+                    [cpf, user.id],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                response: null
+                            })
+                        } else {
+                            console.log(`atualizou o cpf`);
+                            return;
+                        }
+                    }
+                )
+            }
+        }
 
-        // if (updated) {
-        //     return res.status(200).send({
-        //         error: null,
-        //         message: 'Atualizado com sucesso',
-        //         response: null
-        //     })
-        // }
+        res.status(200).send({
+            mesasge: 'atualizado com sucesso'
+        })
 
     } catch (error) {
         return res.status(500).send({
@@ -445,4 +495,4 @@ const login = async function (req, res) {
     }
 }
 
-export { list, updateProfile, createUser, login }
+export { list, createUser, login, updateUser }

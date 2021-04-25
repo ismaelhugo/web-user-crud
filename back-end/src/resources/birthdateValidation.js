@@ -12,7 +12,7 @@ export default function BirthdateValidation(birthdate) {
 
     let currentYear = parseInt(new Date().getFullYear())    
 
-    if (!(currentYear == arr[2]) && !(currentYear - arr[2] > 110)) {
+    if (!(currentYear <= arr[2]) && !(currentYear - arr[2] > 110)) {
       let newBirthdate = `${arr[2]}-${arr[1]}-${arr[0]}`;
       return newBirthdate;
     }

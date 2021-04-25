@@ -8,7 +8,7 @@ import phoneValidation from './phoneValidation';
 
 const resources = {
   birthdateValidation: birthdateValidation,
-  check_valid_email: emailValidation,
+  emailValidation: emailValidation,
   phoneValidation: phoneValidation,
   cpfValidation: cpfValidation,
 }
