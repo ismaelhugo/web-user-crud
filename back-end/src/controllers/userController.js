@@ -134,8 +134,8 @@ const createUser = async function (req, res) {
                                                             )
                                                         }
                                                     }
-                                                })
-
+                                                }
+                                                )
                                         }
 
                                     }
@@ -224,7 +224,7 @@ const updateProfile = async function (req, res) {
             let name = info.name.toString().replace(/\D/g, '')
 
             connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
-                [name],
+                [name,],
                 (err, result) => {
                     if (err) {
                         return res.status(500).send({
