@@ -1,5 +1,6 @@
 const connection = require('../bd');
-var bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
+
 import resources from '../resources';
 
 // Criar Usuário
@@ -126,9 +127,13 @@ const createUser = async function (req, res) {
                                                                             error: err
                                                                         })
                                                                     } else {
-                                                                        return res.status(201).send({
+                                                                        const token = resources.generateAccessToken({ secret: newUser.email });
+                                                                        // res.json(token);
+                                                                        console.log(token)
+                                                                        return res.status(201).json({
                                                                             message: 'Criado com sucesso',
                                                                             response: result,
+                                                                            accessToken: token,
                                                                         })
                                                                     }
                                                                 }
@@ -138,15 +143,12 @@ const createUser = async function (req, res) {
                                                 }
                                             )
                                         }
-
                                     }
                                 }
-
                             }
                         };
                     }
                 );
-
             }
         }
 
@@ -226,16 +228,12 @@ const updateUser = async function (req, res) {
             cpf: req.body.cpf,
         }
 
-        console.log(`name: ${newInfo.name}`);
-
         /* Nome */
         if (newInfo.name && newInfo.name != null && typeof newInfo.name != undefined) {
             console.log(`atualizar nome`);
             connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
                 [newInfo.name, user.id],
                 (err, result) => {
-                    console.log(`query atualizar nome`);
-
                     if (err) {
                         return res.status(500).send({
                             error: err,
@@ -437,7 +435,7 @@ const updateUser = async function (req, res) {
                         }
                     }
                 )
-    
+
                 // o cpf é válido e único! atualizar usuário
                 connection.query('UPDATE usuario SET cpf = (?) WHERE id_usuario = (?)',
                     [cpf, user.id],
@@ -471,15 +469,17 @@ const updateUser = async function (req, res) {
 // Login
 const login = async function (req, res) {
 
-    var email = req.body.email
-    var senha = req.body.senha
+    const email = req.body.email
+    const senha = req.body.senha
 
     if (email && senha) {
         connection.query('SELECT * FROM usuario WHERE email = ?', [email], function (err, results, fields) {
             if (results[0].senha) {
                 bcrypt.compare(senha, results[0].senha, function (error, result) {
                     if (result) {
-                        return res.send(results[0]);
+                        const token = resources.generateAccessToken({ userSecret: req.body.email });
+                        return res.json(token);
+                        // return res.send(results[0]);
                     }
                     else {
                         return res.status(400).send({
@@ -489,10 +489,24 @@ const login = async function (req, res) {
                 })
             }
         });
+
+        // console.log(JSON.stringify(req.session))
+
+        // req.session.token = await bcrypt.hash(email, 10);
+
+        // console.log(JSON.stringify(req.session))
+        // console.log(JSON.stringify(req.session.id))
     } else {
         res.send('Campos vazios');
         res.end();
     }
 }
 
-export { list, createUser, login, updateUser }
+const secret = async function (req, res) {
+    console.log(req.user)
+    res.send({
+        message: 'Segredo'
+    })
+}
+
+export { list, createUser, login, updateUser, secret }
