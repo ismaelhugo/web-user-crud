@@ -5,7 +5,7 @@
 export default function BirthdateValidation(birthdate) {
   if (!birthdate || birthdate == '') {
     return new Error({
-      message: 'Data de Nascimento inválida'
+      message: 'Data de Nascimento inválida.'
     });
   } else {
     let arr = birthdate.split('/');

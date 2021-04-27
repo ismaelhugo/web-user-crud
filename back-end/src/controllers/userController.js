@@ -17,7 +17,7 @@ const createUser = async function (req, res) {
 
         if (!newUser.name || !newUser.email || !newUser.password || !newUser.phone || !newUser.birthdate || !newUser.cpf) {
             return res.status(400).send({
-                message: 'Dados incompletos',
+                message: 'Dados incompletos.',
                 response: null
             })
 
@@ -29,7 +29,7 @@ const createUser = async function (req, res) {
 
             if (!valid_password) {
                 return res.status(400).send({
-                    message: 'Senha inválida',
+                    message: 'Senha inválida.',
                     response: null
                 })
 
@@ -44,7 +44,7 @@ const createUser = async function (req, res) {
             const valid_email = await resources.emailValidation(newUser.email);
             if (!valid_email) {
                 return res.status(400).send({
-                    message: 'Email inválido'
+                    message: 'E-mail inválido.'
                 });
 
             } else {
@@ -58,7 +58,7 @@ const createUser = async function (req, res) {
                         if (err) {
                             return res.status(500).send({
                                 error: err,
-                                message: 'Erro ao verificar a exclusividade do email'
+                                message: 'Erro ao verificar a exclusividade do e-mail.'
                             });
 
                         } else {
@@ -74,7 +74,7 @@ const createUser = async function (req, res) {
 
                                 if (!valid_phone) {
                                     return res.status(400).send({
-                                        message: 'Telefone inválido',
+                                        message: 'Telefone inválido.',
                                         response: null
                                     })
 
@@ -84,7 +84,7 @@ const createUser = async function (req, res) {
 
                                     if (!valid_birthdate || valid_birthdate == '') {
                                         return res.status(400).send({
-                                            message: 'Data de Nascimento inválida',
+                                            message: 'Data de Nascimento inválida.',
                                             response: null
                                         })
 
@@ -97,7 +97,7 @@ const createUser = async function (req, res) {
 
                                         if (!valid_cpf) {
                                             return res.status(400).send({
-                                                message: 'CPF inválido',
+                                                message: 'CPF inválido.',
                                                 response: null
                                             })
 
@@ -110,7 +110,7 @@ const createUser = async function (req, res) {
                                                     if (err) {
                                                         return res.status(500).send({
                                                             error: err,
-                                                            message: 'Erro ao verificar a exclusividade do cpf'
+                                                            message: 'Erro ao verificar a exclusividade do cpf.'
                                                         })
                                                     } else {
                                                         if (found_cpf.length > 0) {
@@ -155,7 +155,7 @@ const createUser = async function (req, res) {
     } catch (error) {
         return res.status(500).send({
             error: error,
-            message: 'Erro ao criar usuário',
+            message: 'Erro ao criar usuário.',
             response: null
         })
     }
@@ -192,7 +192,7 @@ const list = async function (req, res) {
 
                 if (!result) {
                     return res.status(400).send({
-                        message: 'Nenhum usuário encontrado'
+                        message: 'Nenhum usuário encontrado.'
                     })
                 } else {
                     return res.status(200).json(result)
@@ -461,7 +461,7 @@ const updateUser = async function (req, res) {
     } catch (error) {
         return res.status(500).send({
             error: error,
-            message: 'Erro ao atulaizar usuário'
+            message: 'Erro ao atualizar usuário.'
         })
     }
 }
@@ -488,7 +488,7 @@ const login = async function (req, res) {
                     }
                     else {
                         return res.status(400).send({
-                            "mensagem": "Nenhum usuario encontrado com essas credenciais"
+                            "mensagem": "Nenhum usuário encontrado com essas credenciais."
                         });
                     }
                 })

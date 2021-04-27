@@ -4,7 +4,7 @@ import connection from "../bd";
 export default async function emailAlreadyExists(email) {
   if (!email) {
     return new Error({
-      message: 'Email inválido'
+      message: 'E-mail inválido.'
     });
   } else {
     connection.query('SELECT * FROM usuario WHERE email = ?',

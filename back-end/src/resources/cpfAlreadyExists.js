@@ -4,7 +4,7 @@ import connection from "../bd";
 export default async function cpfAlreadyExists(cpf) {
   if (!cpf || (cpf.length) != 11) {
     return new Error({
-      message: 'CPF inválido'
+      message: 'CPF inválido.'
     });
   } else {
     connection.query('SELECT * FROM usuario WHERE cpf = (?)',
