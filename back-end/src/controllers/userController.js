@@ -477,8 +477,14 @@ const login = async function (req, res) {
                 bcrypt.compare(password, results[0].senha, function (error, result) {
                     if (result) {
                         const token = resources.generateAccessToken({ userSecret: req.body.email });
-                        return res.json(token);
-                        // return res.send(results[0]);
+                        req.session.sessionToken = token
+
+                        console.log(`session: ${req.session}`)
+
+                        return res.status(200).send({
+                            response: results[0],
+                            sessionToken: req.session.sessionToken
+                        })
                     }
                     else {
                         return res.status(400).send({
@@ -501,6 +507,17 @@ const login = async function (req, res) {
     }
 }
 
+// const deleteUser = async function (req, res) {
+//     // const filePath = __dirname + '/../../../frontend/src/templates/main.html';
+
+//     res.write(fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'front-end', 'src', 'templates', 'main.html')))
+
+//     // console.log(filePath);
+
+//     // res.sendFile(filePath);
+//     res.end();
+// }
+
 const secret = async function (req, res) {
     console.log(req.user)
     res.send({
@@ -508,4 +525,11 @@ const secret = async function (req, res) {
     })
 }
 
-export { list, createUser, login, updateUser, secret }
+export {
+    list,
+    createUser,
+    login,
+    updateUser,
+    secret,
+    // deleteUser 
+}
