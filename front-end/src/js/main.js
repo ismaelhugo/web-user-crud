@@ -1,24 +1,6 @@
-// function getUsers() {
-//     var ajax = new XMLHttpRequest();
-//     var baseURL = "http://localhost:3000"
-
-//     ajax.open("GET", baseURL+"/listar-usuarios", true);
-
-//     ajax.send();
-
-//     ajax.onreadystatechange = function () {
-
-//         if (ajax.readyState == 4 && ajax.status == 200) {
-
-//             var data = ajax.responseText;
-
-//             console.log(data);
-//         }
-//     }
-// }
-
 function getUsersByName(inputID) {
     let name = document.getElementById(inputID).value;
+    let lista = document.querySelector(".list")
 
     if (!name || name == "") {
         name = 'all'
@@ -26,6 +8,8 @@ function getUsersByName(inputID) {
 
     let ajax = new XMLHttpRequest();
     let baseURL = "http://localhost:3000"
+
+    ajax.responseType = "json"
 
     ajax.open("GET", baseURL+`/listar-usuarios/${name}`, true)
 
@@ -35,9 +19,25 @@ function getUsersByName(inputID) {
 
         if (ajax.readyState == 4 && ajax.status == 200) {
 
-            var data = ajax.responseText;
-
-            console.log(data);
+            var data = ajax.response;
+            console.log(data)
+            
+            for(var i = 0; i < data.length; i++){
+                lista.innerHTML += "<li>"
+                +"<p>"
+                +data[i].nome
+                +"</p>"
+                +"<p>"
+                +data[i].email
+                +"</p>"
+                +"</li>"
+            }
+            
         }
     }
+}
+
+function logout(){
+    sessionStorage.removeItem("User");
+    window.location.href = 'http://127.0.0.1:5500/front-end/src/templates/login.html'
 }

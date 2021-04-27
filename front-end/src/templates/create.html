@@ -13,20 +13,19 @@
         <div class="container">
             <div class="center">
                 <h2>Cadastre-se</h2>
-                <form style="text-align: center;">
                     <input type="text" id="name" placeholder="Nome">
                     <input type="email" id="email" placeholder="E-mail">
-                    <input type="text" id="telefone" placeholder="Telefone">
+                    <input type="text" id="phone" placeholder="Telefone com DDD">
                     <input type="text" id="cpf" placeholder="CPF">
-                    <input type="text" id="data-de-nascimento" placeholder="Data de nascimento (DD/MM/AAAA)">
+                    <input type="text" id="birthdate" onkeypress="mask(this)" maxlength="10" placeholder="Data de nascimento (DD/MM/AAAA)">
                     <input type="password" id="password" placeholder="Senha (Min. 5 dígitos)">
-                    <input type="password" id="password" placeholder="Confirmar senha">
-                    <button type="submit">Pronto</button>
+                    <input type="password" id="passwordConfirm" placeholder="Confirmar senha">
+                    <button onClick="createUser()">Pronto</button>
+                    <button onClick="clean()">Limpar</button>
                     <br>
-                    <p align="center"><a href="./login.html">&lt &lt Voltar</a></p>
-                </form>
+                    <p><a href="./login.html">&lt &lt Voltar</a></p>
             </div>
         </div>
-        <script src="../js/main.js"></script>
+        <script src="../js/create.js"></script>
     </body>
 </html>
