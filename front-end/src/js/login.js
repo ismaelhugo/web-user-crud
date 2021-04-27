@@ -28,7 +28,7 @@ function login() {
             }
         }
     } else{
-        alert("Email e senha sao campos obrigatorios")
+        alert("E-mail e senha são campos obrigatórios.")
     }
 }
 
