@@ -468,14 +468,13 @@ const updateUser = async function (req, res) {
 
 // Login
 const login = async function (req, res) {
+    var email = req.body.email
+    var password = req.body.password
 
-    const email = req.body.email
-    const senha = req.body.senha
-
-    if (email && senha) {
+    if (email && password) {
         connection.query('SELECT * FROM usuario WHERE email = ?', [email], function (err, results, fields) {
             if (results[0].senha) {
-                bcrypt.compare(senha, results[0].senha, function (error, result) {
+                bcrypt.compare(password, results[0].senha, function (error, result) {
                     if (result) {
                         const token = resources.generateAccessToken({ userSecret: req.body.email });
                         return res.json(token);
