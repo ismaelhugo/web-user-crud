@@ -1,7 +1,7 @@
 function updateProfile() {
   let user = {
     name: document.getElementById("name"),
-    // email: document.getElementById("email"),
+    email: document.getElementById("email"),
     // phone: document.getElementById("phone"),
     // cpf: document.getElementById("cpf"),
     // birthdate: document.getElementById("birthdate"),
@@ -10,6 +10,7 @@ function updateProfile() {
   }
 
   console.log(user.name.value)
+  console.log(user.email.value)
 
   let update = {
     name: null,
@@ -31,13 +32,16 @@ function updateProfile() {
     }
   }
 
-  // if (user.email && user.email != null && typeof user.email != undefined) {
-  //   const validEmail = vEmail(user.email)
+  if (user.email && user.email != null && typeof user.email != undefined) {
+    const validEmail = vEmail(user.email.value)
 
-  //   if (!validEmail) {
-  //     return alert('Email inváldo')
-  //   }
-  // }
+    if (!validEmail) {
+      return alert('Email inváldo')
+    } else {
+      update.email = user.email.value
+    }
+  }
+
 
   // if (user.phone && user.phone != null && typeof user.phone != undefined) {
   //   const validPhone = vPhone(user.phone)

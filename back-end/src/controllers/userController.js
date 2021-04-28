@@ -284,8 +284,7 @@ const updateUser = async function (req, res) {
                         })
 
                     } else {
-                        console.log(`atualizou o nome!`);
-                        return;
+                        console.log(`atualizou o nome!`)
                     }
                 }
             )
@@ -335,7 +334,6 @@ const updateUser = async function (req, res) {
                             })
                         } else {
                             console.log(`atualizou o email!`);
-                            return;
                         }
                     }
                 )
@@ -369,7 +367,6 @@ const updateUser = async function (req, res) {
                             })
                         } else {
                             console.log(`atualizou o telefone!`);
-                            return;
                         }
                     }
                 )
@@ -400,7 +397,6 @@ const updateUser = async function (req, res) {
                             })
                         } else {
                             console.log(`atualizou a data de nascimento!`);
-                            return;
                         }
                     }
                 )
@@ -453,7 +449,6 @@ const updateUser = async function (req, res) {
                             })
                         } else {
                             console.log(`atualizou o cpf`);
-                            return;
                         }
                     }
                 )
@@ -506,7 +501,6 @@ const updatePassword = async function (req, res) {
 
                         } else {
                             console.log(`atualizou a senha!`);
-                            return;
                         }
                     }
                 )
