@@ -167,7 +167,7 @@ const list = async function (req, res) {
 
     // Se não tem a query, nome = all retorna o Nome e o Email de todos os usuarios
     if (!name || name == 'all') {
-        connection.query('SELECT nome, email FROM usuario', function (err, result) {
+        connection.query('SELECT nome, email, data_nasc FROM usuario', function (err, result) {
             if (err) {
                 return res.status(500).send({
                     error: err,
@@ -175,12 +175,41 @@ const list = async function (req, res) {
                 })
             }
 
-            return res.json(result)
+            let i = 0;
+            let fullResult = [];
+            let date = new Date
+            let currentYear = parseInt(date.getFullYear());
+
+            for (i==0; i < result.length; i++) {
+                let obj;
+
+                let birth = result[i].data_nasc
+                console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
+
+                let birthYear = parseInt(birth.getFullYear());
+
+                console.log(`birthYear: ${birthYear}`)
+
+                let age = (currentYear - birthYear);
+
+                console.log(`age: ${age}`)
+
+                obj = {
+                    nome: result[i].nome,
+                    email: result[i].email,
+                    idade: age,
+                }
+
+                fullResult.push(obj)
+                console.log(`obj: ${obj}`)
+            }
+
+            return res.json(fullResult);
         })
 
     } else {
         // se tem query, retorna o Nome e o Email dos usuarios que tem essa query name
-        connection.query('SELECT nome, email FROM usuario WHERE nome LIKE ? ORDER BY nome',
+        connection.query('SELECT nome, email, data_nasc FROM usuario WHERE nome LIKE ? ORDER BY nome',
             (`%${name}%`),
             function (err, result) {
                 if (err) {
@@ -190,12 +219,35 @@ const list = async function (req, res) {
                     })
                 }
 
-                if (!result) {
+                if (result.length = 0 || !result) {
                     return res.status(400).send({
                         message: 'Nenhum usuário encontrado.'
                     })
                 } else {
-                    return res.status(200).json(result)
+                    // console.log('ajdia', result[0])
+                    // console.log(`result[0].lenght: ${result[0].lenght}`)
+                    // console.log(`result.lenght: ${result.lenght}`)
+
+                    let i = 0;
+                    let fullResult = [];
+
+                    for (i==0; i < result.length; i++) {
+                        let obj;
+                        let age = (Date.now()) - result[i].data_nasc;
+
+                        console.log(`age: ${age}`)
+
+                        obj = {
+                            nome: result[i].nome,
+                            email: result[i].email,
+                            idade: age,
+                        }
+
+                        fullResult.push(obj)
+                        console.log(`obj: ${obj}`)
+                    }
+
+                    return res.status(200).json(fullResult)
                 }
             }
         )
