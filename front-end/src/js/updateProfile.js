@@ -5,8 +5,6 @@ function updateProfile() {
     // phone: document.getElementById("phone"),
     // cpf: document.getElementById("cpf"),
     // birthdate: document.getElementById("birthdate"),
-    // password: document.getElementById("password"),
-    // passwordConfirm: document.getElementById("passwordConfirm")
   }
 
   console.log(user.name.value)
@@ -18,8 +16,6 @@ function updateProfile() {
     phone: null,
     cpf: null,
     birthdate: null,
-    password: null,
-    passwordConfirm: null,
   }
 
   if (user.name && user.name != null && typeof user.name != undefined) {
