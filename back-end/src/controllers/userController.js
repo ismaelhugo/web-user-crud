@@ -27,7 +27,7 @@ const createUser = async function (req, res) {
         } else {
             /* Senha */
             // validar senha ->  precisa ter pelo menos 5 caracteres
-            const valid_password = ((newPassword).toString().length >= 5);
+            const valid_password = ((newUser.password).toString().length >= 5);
             let hashPassword = '';
 
             if (!valid_password) {
