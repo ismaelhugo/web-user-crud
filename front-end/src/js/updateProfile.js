@@ -7,8 +7,11 @@ function updateProfile() {
     birthdate: document.getElementById("birthdate"),
   }
 
-  console.log(user.name.value)
-  console.log(user.email.value)
+  console.log(`name: ${user.name.value}`)
+  console.log(`email: ${user.email.value}`)
+  console.log(`phone: ${user.phone.value}`)
+  console.log(`cpf: ${user.cpf.value}`)
+  console.log(`birthdate: ${user.birthdate.value}`)
 
   let update = {
     name: null,
@@ -43,17 +46,22 @@ function updateProfile() {
 
     if (!validPhone) {
       return alert('Telefone inváldo')
+    } else {
+      update.phone = user.phone.value
     }
   }
 
   if (user.cpf && user.cpf != null && typeof user.cpf != undefined) {
     // tirar outros caracteres, deixa só os números
-    user.cpf = user.cpf.toString().replace(/[^\d]+/g, '');
+    cpf = user.cpf.value
+    cpf = cpf.toString().replace(/[^\d]+/g, '');
 
-    const validCPF = vCPF(user.cpf)
+    const validCPF = vCPF(cpf)
 
     if (!validCPF) {
       return alert('CPF inváldo')
+    } else {
+      update.cpf = cpf
     }
   }
 
@@ -63,9 +71,11 @@ function updateProfile() {
     if (!validBirth) {
       return alert('Data de Nascimento inválda')
     } else {
-      user.birthdate = validBirth
+      update.email = validBirth
     }
   }
+
+  console.log(`update: ${update}`)
 
   let ajax = new XMLHttpRequest();
   let baseURL = "http://localhost:3000"
@@ -78,14 +88,18 @@ function updateProfile() {
 
   const token = sessionStorage.getItem("Token");
   ajax.setRequestHeader("authorization", token);
-  console.log(`token = ${token}`)
+
 
   newInfo = JSON.stringify(update)
   ajax.send(newInfo);
 
+
   ajax.onreadystatechange = function () {
     if (ajax.readyState == 4 && ajax.status == 200) {
       ajax.onreadystatechange = function () {
+        const userID = sessionStorage.getItem("UserID");       
+        ajax.send(userID);
+
         if (ajax.readyState == 4) {
           if (ajax.status == 201) {
             var data = ajax.responseText;
