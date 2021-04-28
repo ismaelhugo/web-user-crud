@@ -15,16 +15,15 @@
     <div class="container">
         <div class="center">
             <h2>Editar dados</h2>
-            <div class="container-form">
-                <input type="text" id="name" placeholder="Nome">
-                <input type="email" id="email" placeholder="E-mail">
-                <input type="text" id="telefone" placeholder="Telefone">
-                <input type="text" id="cpf" placeholder="CPF">
-                <input type="text" id="data-de-nascimento" placeholder="Data de nascimento (DD/MM/AAAA)">
-                <input type="password" id="password" placeholder="Senha (Min. 5 dígitos)">
-                <input type="password" id="passwordConfirm" placeholder="Confirmar senha">
-                <button onclick="updateProfile()">Atualizar dados</button>
-            </div>
+            <input type="text" id="name" placeholder="Nome">
+            <input type="email" id="email" placeholder="E-mail">
+            <input type="text" id="telefone" placeholder="Telefone">
+            <input type="text" id="cpf" placeholder="CPF">
+            <input type="text" id="data-de-nascimento" placeholder="Data de nascimento (DD/MM/AAAA)">
+            <input type="password" id="password" placeholder="Senha (Min. 5 dígitos)">
+            <input type="password" id="password" placeholder="Confirmar senha">
+            <button onclick="update()">Atualizar dados</button>
+            <button id="delete" onclick="deleteUser()">Excluir conta</button>
             <br>
             <p align="center"><a href="./main.html">&lt &lt Voltar para a página inicial</a></p>
         </div>

@@ -32,7 +32,7 @@ hr.solid {
 }
 
 input{
-    width: 500px;
+    width: 80%;
     margin-top: 14px;
 }
 
@@ -47,9 +47,7 @@ input{
     box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
     border-radius: 15px;
 }
-form{
-    width: fit-content;
-}
+
 .container-form{
     display: flex;
     flex-direction: column;

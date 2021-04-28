@@ -22,10 +22,7 @@ function login() {
                 var data = ajax.responseText;
                 let dataJson = JSON.parse(data);
 
-                console.log(`data: ${dataJson}`);
-                console.log(`data.token: ${dataJson.token}`);
-
-                sessionStorage.setItem("User", dataJson);
+                sessionStorage.setItem("UserID", dataJson.id);
 
                 sessionStorage.setItem("Token", dataJson.token);
 

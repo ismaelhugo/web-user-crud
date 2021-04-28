@@ -6,6 +6,8 @@ function getUsersByName(inputID) {
         name = 'all'
     }
 
+    lista.innerHTML = ""
+
     let ajax = new XMLHttpRequest();
     let baseURL = "http://localhost:3000"
 
@@ -21,7 +23,9 @@ function getUsersByName(inputID) {
 
             var data = ajax.response;
             console.log(data)
-            
+            if(data.length === 0){
+                lista.innerHTML += "<h2>Nenhum usuario encontrado</h2>"
+            }
             for(var i = 0; i < data.length; i++){
                 lista.innerHTML += "<li>"
                 +"<p>"
