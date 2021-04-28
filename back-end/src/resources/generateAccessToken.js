@@ -1,10 +1,8 @@
 const jwt = require('jsonwebtoken');
-
 const dotenv = require('dotenv');
 
 // configurar o dotenv para acessar as váriáveis de ambiente
 const result = dotenv.config({ path: __dirname + '/../.env' })
-
 if (result.error) {
   throw result.error
 }

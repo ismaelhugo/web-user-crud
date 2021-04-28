@@ -1,12 +1,12 @@
 function updateProfile() {
   let user = {
     name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    cpf: document.getElementById("cpf").value,
-    birthdate: document.getElementById("birthdate").value,
-    password: document.getElementById("password").value,
-    passwordConfirm: document.getElementById("passwordConfirm").value
+    // email: document.getElementById("email").value,
+    // phone: document.getElementById("phone").value,
+    // cpf: document.getElementById("cpf").value,
+    // birthdate: document.getElementById("birthdate").value,
+    // password: document.getElementById("password").value,
+    // passwordConfirm: document.getElementById("passwordConfirm").value
   }
 
   if (user.name && user.name != null && typeof user.name != undefined) {
@@ -17,74 +17,75 @@ function updateProfile() {
     }
   }
 
-  if (user.email && user.email != null && typeof user.email != undefined) {
-    const validEmail = vEmail(user.email)
+  // if (user.email && user.email != null && typeof user.email != undefined) {
+  //   const validEmail = vEmail(user.email)
 
-    if (!validEmail) {
-      return alert('Email inváldo')
-    }
-  }
+  //   if (!validEmail) {
+  //     return alert('Email inváldo')
+  //   }
+  // }
 
-  if (user.phone && user.phone != null && typeof user.phone != undefined) {
-    const validPhone = vPhone(user.phone)
+  // if (user.phone && user.phone != null && typeof user.phone != undefined) {
+  //   const validPhone = vPhone(user.phone)
 
-    if (!validPhone) {
-      return alert('Telefone inváldo')
-    }
-  }
+  //   if (!validPhone) {
+  //     return alert('Telefone inváldo')
+  //   }
+  // }
 
-  if (user.cpf && user.cpf != null && typeof user.cpf != undefined) {
-    // tirar outros caracteres, deixa só os números
-    user.cpf = user.cpf.toString().replace(/[^\d]+/g, '');
+  // if (user.cpf && user.cpf != null && typeof user.cpf != undefined) {
+  //   // tirar outros caracteres, deixa só os números
+  //   user.cpf = user.cpf.toString().replace(/[^\d]+/g, '');
 
-    const validCPF = vCPF(user.cpf)
+  //   const validCPF = vCPF(user.cpf)
 
-    if (!validCPF) {
-      return alert('CPF inváldo')
-    }
-  }
+  //   if (!validCPF) {
+  //     return alert('CPF inváldo')
+  //   }
+  // }
 
-  if (user.birthdate && user.birthdate != null && typeof user.birthdate != undefined) {
-    const validBirth = vBirth(user.birthdate)
+  // if (user.birthdate && user.birthdate != null && typeof user.birthdate != undefined) {
+  //   const validBirth = vBirth(user.birthdate)
 
-    if (!validBirth) {
-      return alert('Data de Nascimento inválda')
-    } else {
-      user.birthdate = validBirth
-    }
-  }
+  //   if (!validBirth) {
+  //     return alert('Data de Nascimento inválda')
+  //   } else {
+  //     user.birthdate = validBirth
+  //   }
+  // }
 
-  if (user.password && user.password != null && typeof user.password != undefined) {
-    const validPass = vPassword(user.password, user.passwordConfirm)
+  // if (user.password && user.password != null && typeof user.password != undefined) {
+  //   const validPass = vPassword(user.password, user.passwordConfirm)
 
-    if (!validPass) {
-      return alert('Senha inválda')
-    }
-  }
+  //   if (!validPass) {
+  //     return alert('Senha inválda')
+  //   }
+  // }
 
   let ajax = new XMLHttpRequest();
   let baseURL = "http://localhost:3000"
 
-  ajax.responseType = "json"
+  // ajax.responseType = "json"
 
   ajax.open("PUT", baseURL + '/editar-perfil', true)
 
-  ajax.send();
+  ajax.setRequestHeader("Content-Type", "application/json");
+
+  const token = sessionStorage.getItem("Token");
+  ajax.setRequestHeader("authorization", token);
+  console.log(`token = ${token}`)
+
+  newInfo = JSON.stringify(user)
+  ajax.send(newInfo);
 
   ajax.onreadystatechange = function () {
-
     if (ajax.readyState == 4 && ajax.status == 200) {
-      newInfo = JSON.stringify(user)
-
-      ajax.setRequestHeader("Content-Type", "application/json");
-      ajax.send(newInfo);
-
       ajax.onreadystatechange = function () {
         if (ajax.readyState == 4) {
           if (ajax.status == 201) {
             var data = ajax.responseText;
             alert("Atualizado com sucesso!")
-            window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
+            // window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
           }
           else if (ajax.status == 400) {
             alert(ajax.responseText)
