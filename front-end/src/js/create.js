@@ -11,7 +11,7 @@ function createUser() {
     }
 
     if (!user.name || !user.email || !user.password || !user.phone || !user.birthdate || !user.cpf) {
-        alert("Todos os campos sao obrigatorios")
+        alert("Todos os campos são obrigatórios.")
     } else {
 
         const validPass = vPassword(user.password, user.passwordConfirm)
@@ -22,25 +22,25 @@ function createUser() {
         const validBirth = vBirth(user.birthdate)
 
         if (!validPass) {
-            alert("As senhas nao correspondem")
+            alert("As senhas não correspondem.")
         }
         else if (user.password.length < 5) {
-            alert("A senha informada tem menos que 5 caracteres")
+            alert("A senha informada tem menos que 5 caracteres.")
         }
         else if (!validEmail) {
-            alert("O email informado n eh valido")
+            alert("O email informado não é válido.")
         }
         else if (!validCPF) {
-            alert("O CPF informado n eh valido")
+            alert("O CPF informado não é válido.")
         }
         else if (!validPhone) {
-            alert("O telefone informado n eh valido")
+            alert("O telefone informado não é válido.")
         }
         else if(!validName){
-            alert("O nome nao é valido. Digite um nome com menos de 50 caracteres")
+            alert("O nome não é válido. Digite um nome com menos de 50 caracteres.")
         }
         else if(!validBirth){
-            alert("A data de nascimento n eh valida")
+            alert("A data de nascimento não é válida.")
         }
         else{
             let ajax = new XMLHttpRequest();
@@ -57,7 +57,7 @@ function createUser() {
                 if (ajax.readyState == 4) {
                     if(ajax.status == 201){
                         var data = ajax.responseText;
-                        alert("Cadastrado com sucesso")
+                        alert("Cadastrado com sucesso!")
                          window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
                     }
                     else if(ajax.status == 400){

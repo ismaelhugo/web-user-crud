@@ -3,7 +3,7 @@
 export default function phoneValidation(phone) {
   if (!phone || phone == '') {
     return new Error({
-      message: 'Telefone inválido'
+      message: 'Telefone inválido.'
     });
   } else {
     //tirar letras e tal

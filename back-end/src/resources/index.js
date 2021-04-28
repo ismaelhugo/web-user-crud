@@ -5,12 +5,18 @@ import birthdateValidation from './birthdateValidation';
 import emailValidation from './emailValidation';
 import phoneValidation from './phoneValidation';
 
+import generateAccessToken from './generateAccessToken';
+import authenticateToken from './authenticateToken';
+
 
 const resources = {
   birthdateValidation: birthdateValidation,
-  check_valid_email: emailValidation,
+  emailValidation: emailValidation,
   phoneValidation: phoneValidation,
   cpfValidation: cpfValidation,
+
+  generateAccessToken: generateAccessToken,
+  authenticateToken: authenticateToken
 }
 
 export default resources;
