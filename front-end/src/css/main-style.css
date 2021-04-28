@@ -84,11 +84,11 @@ button{
 .list{
     display: flex;
     align-items: center;
-    max-width: 70vw;
+    width: 1000px;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    flex-direction: row;
     margin: 48px;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
@@ -99,5 +99,11 @@ button{
     margin: 10px;
     padding: 10px;
     list-style: none; 
-    width: 200px
+    width: 400px;
+    height: auto;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
