@@ -1,19 +1,33 @@
 function updateProfile() {
   let user = {
-    name: document.getElementById("name").value,
-    // email: document.getElementById("email").value,
-    // phone: document.getElementById("phone").value,
-    // cpf: document.getElementById("cpf").value,
-    // birthdate: document.getElementById("birthdate").value,
-    // password: document.getElementById("password").value,
-    // passwordConfirm: document.getElementById("passwordConfirm").value
+    name: document.getElementById("name"),
+    // email: document.getElementById("email"),
+    // phone: document.getElementById("phone"),
+    // cpf: document.getElementById("cpf"),
+    // birthdate: document.getElementById("birthdate"),
+    // password: document.getElementById("password"),
+    // passwordConfirm: document.getElementById("passwordConfirm")
+  }
+
+  console.log(user.name.value)
+
+  let update = {
+    name: null,
+    email: null,
+    phone: null,
+    cpf: null,
+    birthdate: null,
+    password: null,
+    passwordConfirm: null,
   }
 
   if (user.name && user.name != null && typeof user.name != undefined) {
-    const validName = vName(user.name)
+    const validName = vName(user.name.value)
 
     if (!validName) {
       return alert('Nome inváldo')
+    } else {
+      update.name = user.name.value
     }
   }
 
@@ -75,7 +89,7 @@ function updateProfile() {
   ajax.setRequestHeader("authorization", token);
   console.log(`token = ${token}`)
 
-  newInfo = JSON.stringify(user)
+  newInfo = JSON.stringify(update)
   ajax.send(newInfo);
 
   ajax.onreadystatechange = function () {
