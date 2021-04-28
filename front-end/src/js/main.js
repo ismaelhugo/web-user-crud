@@ -30,6 +30,9 @@ function getUsersByName(inputID) {
                 +"<p>"
                 +data[i].email
                 +"</p>"
+                +"<p>"
+                +data[i].idade
+                +"</p>"
                 +"</li>"
             }
             
