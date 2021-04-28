@@ -2,9 +2,9 @@ function updateProfile() {
   let user = {
     name: document.getElementById("name"),
     email: document.getElementById("email"),
-    // phone: document.getElementById("phone"),
-    // cpf: document.getElementById("cpf"),
-    // birthdate: document.getElementById("birthdate"),
+    phone: document.getElementById("phone"),
+    cpf: document.getElementById("cpf"),
+    birthdate: document.getElementById("birthdate"),
   }
 
   console.log(user.name.value)
@@ -38,43 +38,34 @@ function updateProfile() {
     }
   }
 
+  if (user.phone && user.phone != null && typeof user.phone != undefined) {
+    const validPhone = vPhone(user.phone.value)
 
-  // if (user.phone && user.phone != null && typeof user.phone != undefined) {
-  //   const validPhone = vPhone(user.phone)
+    if (!validPhone) {
+      return alert('Telefone inváldo')
+    }
+  }
 
-  //   if (!validPhone) {
-  //     return alert('Telefone inváldo')
-  //   }
-  // }
+  if (user.cpf && user.cpf != null && typeof user.cpf != undefined) {
+    // tirar outros caracteres, deixa só os números
+    user.cpf = user.cpf.toString().replace(/[^\d]+/g, '');
 
-  // if (user.cpf && user.cpf != null && typeof user.cpf != undefined) {
-  //   // tirar outros caracteres, deixa só os números
-  //   user.cpf = user.cpf.toString().replace(/[^\d]+/g, '');
+    const validCPF = vCPF(user.cpf)
 
-  //   const validCPF = vCPF(user.cpf)
+    if (!validCPF) {
+      return alert('CPF inváldo')
+    }
+  }
 
-  //   if (!validCPF) {
-  //     return alert('CPF inváldo')
-  //   }
-  // }
+  if (user.birthdate && user.birthdate != null && typeof user.birthdate != undefined) {
+    const validBirth = vBirth(user.birthdate.value)
 
-  // if (user.birthdate && user.birthdate != null && typeof user.birthdate != undefined) {
-  //   const validBirth = vBirth(user.birthdate)
-
-  //   if (!validBirth) {
-  //     return alert('Data de Nascimento inválda')
-  //   } else {
-  //     user.birthdate = validBirth
-  //   }
-  // }
-
-  // if (user.password && user.password != null && typeof user.password != undefined) {
-  //   const validPass = vPassword(user.password, user.passwordConfirm)
-
-  //   if (!validPass) {
-  //     return alert('Senha inválda')
-  //   }
-  // }
+    if (!validBirth) {
+      return alert('Data de Nascimento inválda')
+    } else {
+      user.birthdate = validBirth
+    }
+  }
 
   let ajax = new XMLHttpRequest();
   let baseURL = "http://localhost:3000"

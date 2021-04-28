@@ -174,36 +174,44 @@ const list = async function (req, res) {
                 })
             }
 
-            let i = 0;
-            let fullResult = [];
-            let date = new Date
-            let currentYear = parseInt(date.getFullYear());
+            if (result.length == 0 || !result) {
+                return res.status(400).send({
+                    message: 'Nenhum usuário encontrado.'
+                })
 
-            for (i == 0; i < result.length; i++) {
-                let obj;
+            } else {
+                let i = 0;
+                let fullResult = [];
+                let date = new Date
+                let currentYear = parseInt(date.getFullYear());
 
-                let birth = result[i].data_nasc
-                console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
+                for (i == 0; i < result.length; i++) {
+                    let obj;
 
-                let birthYear = parseInt(birth.getFullYear());
+                    let birth = result[i].data_nasc
+                    console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
 
-                console.log(`birthYear: ${birthYear}`)
+                    let birthYear = parseInt(birth.getFullYear());
 
-                let age = (currentYear - birthYear);
+                    console.log(`birthYear: ${birthYear}`)
 
-                console.log(`age: ${age}`)
+                    let age = (currentYear - birthYear);
 
-                obj = {
-                    nome: result[i].nome,
-                    email: result[i].email,
-                    idade: age,
+                    console.log(`age: ${age}`)
+
+                    obj = {
+                        nome: result[i].nome,
+                        email: result[i].email,
+                        idade: age,
+                    }
+
+                    fullResult.push(obj)
+                    console.log(`obj: ${obj}`)
                 }
 
-                fullResult.push(obj)
-                console.log(`obj: ${obj}`)
-            }
+                return res.json(fullResult);
 
-            return res.json(fullResult);
+            }
         })
 
     } else {
@@ -218,21 +226,30 @@ const list = async function (req, res) {
                     })
                 }
 
-                if (result.length = 0 || !result) {
+                console.log(`result: ${result.length}`)
+
+                if (result.length == 0 || !result) {
                     return res.status(400).send({
                         message: 'Nenhum usuário encontrado.'
                     })
-                } else {
-                    // console.log('ajdia', result[0])
-                    // console.log(`result[0].lenght: ${result[0].lenght}`)
-                    // console.log(`result.lenght: ${result.lenght}`)
 
+                } else {
                     let i = 0;
                     let fullResult = [];
+                    let date = new Date
+                    let currentYear = parseInt(date.getFullYear());
 
                     for (i == 0; i < result.length; i++) {
                         let obj;
-                        let age = (Date.now()) - result[i].data_nasc;
+
+                        let birth = result[i].data_nasc
+                        console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
+
+                        let birthYear = parseInt(birth.getFullYear());
+
+                        console.log(`birthYear: ${birthYear}`)
+
+                        let age = (currentYear - birthYear);
 
                         console.log(`age: ${age}`)
 
@@ -246,7 +263,7 @@ const list = async function (req, res) {
                         console.log(`obj: ${obj}`)
                     }
 
-                    return res.status(200).json(fullResult)
+                    return res.json(fullResult);
                 }
             }
         )
@@ -522,9 +539,6 @@ const login = async function (req, res) {
             if (results[0].senha) {
                 bcrypt.compare(password, results[0].senha, function (error, result) {
                     if (result) {
-                        // const token = resources.generateAccessToken({ userSecret: req.body.email });
-                        // req.session.sessionToken = token
-
                         jwt.sign({ userSecret: req.body.email }, tokenSecret, { expiresIn: '1800s' }, (err, generatedToken) => {
                             if (err) {
                                 return res.status(500).send({
@@ -544,10 +558,6 @@ const login = async function (req, res) {
                                 return res.status(200).json(data)
                             }
                         })
-
-                        // return res.status(200).json({
-                        //     data: obj
-                        // })
                     }
                     else {
                         return res.status(400).send({
@@ -558,12 +568,6 @@ const login = async function (req, res) {
             }
         });
 
-        // console.log(JSON.stringify(req.session))
-
-        // req.session.token = await bcrypt.hash(email, 10);
-
-        // console.log(JSON.stringify(req.session))
-        // console.log(JSON.stringify(req.session.id))
     } else {
         res.send('Campos vazios');
         res.end();
@@ -573,10 +577,10 @@ const login = async function (req, res) {
 const deleteUser = async function (req, res) {
     let { id } = req.body
 
-    connection.query('SELECT * FROM usuario WHERE id = ?', [id], function (err, results, fields){
+    connection.query('SELECT * FROM usuario WHERE id = ?', [id], function (err, results, fields) {
         console.log(results[0])
     })
-  
+
 }
 
 export {
