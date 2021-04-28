@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import * as userController from './controllers/userController';
-import resources from './resources';
+import checkUserAuth from './middlewares/checkUserAuth'
 
 const router = Router();
 
+// Acessáveis por qualquer pessoa (não necessita de autenticação)
 router.post('/cadastrar', userController.createUser);
-router.put('/editar-perfil', userController.updateUser);
-router.get('/listar-usuarios/:name', userController.list);
 router.post('/login', userController.login);
-// router.get('/delete', userController.deleteUser);
 
-// teste de autenticação
-router.get('/segredo', resources.authenticateToken, userController.secret)
+// Restritas aos usuários
+router.put('/editar-perfil', checkUserAuth, userController.updateUser);
+router.put('/atualizar-senha', checkUserAuth, userController.updatePassword);
+router.get('/listar-usuarios/:name', userController.list);
+router.get('/delete',checkUserAuth,  userController.deleteUser);
 
 export default router;

@@ -3,6 +3,13 @@ const app = express()
 const port = 3000
 const cors = require('cors')
 
+// const dotenv = require('dotenv');
+// // configurar o dotenv para acessar as váriáveis de ambiente
+// const result = dotenv.config({ path: __dirname + '/.env' })
+// if (result.error) {
+//   throw result.error
+// }
+
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 

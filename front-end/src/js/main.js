@@ -42,11 +42,6 @@ function getUsersByName(inputID) {
 
 function logout(){
     sessionStorage.removeItem("User");
+    sessionStorage.removeItem("Token");
     window.location.href = 'http://127.0.0.1:5500/front-end/src/templates/login.html'
 }
-
-// function redirect(sessionToken, destination) {
-//     if (!sessionToken) {
-//         // usuário não logado
-//     }
-// }

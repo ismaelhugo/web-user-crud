@@ -1,4 +1,4 @@
-window.onload = getSession;
+// window.onload = getSession;
 
 function login() {
     let user = {
@@ -8,26 +8,31 @@ function login() {
 
     if (user.email && user.password) {
         let ajax = new XMLHttpRequest();
-        let baseURL = "http://localhost:3000"
+        let baseURL = "http://localhost:3000";
 
-        let userJson = JSON.stringify(user)
+        let userJson = JSON.stringify(user);
 
-        ajax.open("POST", baseURL + `/login`)
+        ajax.open("POST", baseURL + `/login`);
         ajax.setRequestHeader("Content-Type", "application/json");
         ajax.send(userJson);
 
         ajax.onreadystatechange = function () {
 
             if (ajax.readyState == 4 && ajax.status == 200) {
-
                 var data = ajax.responseText;
+                let dataJson = JSON.parse(data);
 
-                sessionStorage.setItem("User", data)
-                console.log(sessionStorage.getItem("User"))
+                console.log(`data: ${dataJson}`);
+                console.log(`data.token: ${dataJson.token}`);
+
+                sessionStorage.setItem("User", dataJson);
+
+                sessionStorage.setItem("Token", dataJson.token);
+
                 window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
             }
         }
-    } else{
+    } else {
         alert("E-mail e senha são campos obrigatórios.")
     }
 }

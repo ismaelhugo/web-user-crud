@@ -1,5 +1,8 @@
 const connection = require('../bd');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const tokenSecret = process.env.TOKEN_SECRET;
 
 import resources from '../resources';
 
@@ -24,7 +27,7 @@ const createUser = async function (req, res) {
         } else {
             /* Senha */
             // validar senha ->  precisa ter pelo menos 5 caracteres
-            const valid_password = ((newInfo.password).toString().length >= 5);
+            const valid_password = ((newPassword).toString().length >= 5);
             let hashPassword = '';
 
             if (!valid_password) {
@@ -180,7 +183,7 @@ const list = async function (req, res) {
             let date = new Date
             let currentYear = parseInt(date.getFullYear());
 
-            for (i==0; i < result.length; i++) {
+            for (i == 0; i < result.length; i++) {
                 let obj;
 
                 let birth = result[i].data_nasc
@@ -231,7 +234,7 @@ const list = async function (req, res) {
                     let i = 0;
                     let fullResult = [];
 
-                    for (i==0; i < result.length; i++) {
+                    for (i == 0; i < result.length; i++) {
                         let obj;
                         let age = (Date.now()) - result[i].data_nasc;
 
@@ -256,25 +259,13 @@ const list = async function (req, res) {
 
 const updateUser = async function (req, res) {
     try {
-        // const user = req.user;
-        // console.log(`user: ${user}`);
-
-        // verificar se o usuário está logado
-        // if (!user || user == null || typeof user == undefined) {
-        //     return res.status(401).send({
-        //         message: 'O usuário não está logado'
-        //     });
-        // }
-
-        // user de teste
         const user = {
-            id: 1
+            id: 41
         }
 
         const newInfo = {
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password,
             phone: req.body.phone,
             birthdate: req.body.birthdate,
             cpf: req.body.cpf,
@@ -351,44 +342,7 @@ const updateUser = async function (req, res) {
             }
         }
 
-        /* Senha */
-        if (newInfo.password && newInfo.password != null && typeof newInfo.password != undefined) {
-            console.log(`atualizar senha`);
 
-            // validar senha ->  precisa ter pelo menos 5 caracteres
-            const valid_password = ((newInfo.password).toString().length >= 5);
-            let hashPassword = '';
-
-            if (!valid_password) {
-                return res.status(400).send({
-                    message: 'Senha inválida',
-                    response: null
-                })
-
-            } else {
-                // a senha é válida! passar a senha para Hash:
-                hashPassword = await bcrypt.hash(newInfo.password, 10);
-                console.log(`hash: ${hashPassword}`);
-
-                // atualizar o usuário
-                connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
-                    [hashPassword, user.id],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: err,
-                                message: 'Erro ao atualizar a senha.'
-                            })
-
-                        } else {
-                            console.log(`atualizou a senha!`);
-                            return;
-                        }
-                    }
-                )
-
-            }
-        }
 
         /* Telefone */
         if (newInfo.phone && newInfo.phone != null && typeof newInfo.phone != undefined) {
@@ -518,6 +472,56 @@ const updateUser = async function (req, res) {
     }
 }
 
+const updatePassword = async function (req, res) {
+    try {
+        const newPassword = req.body.password
+
+        if (newPassword && newPassword != null && typeof newPassword != undefined) {
+            console.log(`atualizar senha`);
+
+            // validar senha ->  precisa ter pelo menos 5 caracteres
+            const valid_password = ((newPassword).toString().length >= 5);
+            let hashPassword = '';
+
+            if (!valid_password) {
+                return res.status(400).send({
+                    message: 'Senha inválida',
+                    response: null
+                })
+
+            } else {
+                // a senha é válida! passar a senha para Hash:
+                hashPassword = await bcrypt.hash(newPassword, 10);
+                console.log(`hash: ${hashPassword}`);
+
+                // atualizar o usuário
+                connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
+                    [hashPassword, user.id],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                error: err,
+                                message: 'Erro ao atualizar a senha.'
+                            })
+
+                        } else {
+                            console.log(`atualizou a senha!`);
+                            return;
+                        }
+                    }
+                )
+
+            }
+        }
+
+    } catch (error) {
+        return res.status(500).send({
+            error: error,
+            message: 'Erro ao atualizar a senha.'
+        })
+    }
+}
+
 // Login
 const login = async function (req, res) {
     var email = req.body.email
@@ -528,15 +532,31 @@ const login = async function (req, res) {
             if (results[0].senha) {
                 bcrypt.compare(password, results[0].senha, function (error, result) {
                     if (result) {
-                        const token = resources.generateAccessToken({ userSecret: req.body.email });
-                        req.session.sessionToken = token
+                        // const token = resources.generateAccessToken({ userSecret: req.body.email });
+                        // req.session.sessionToken = token
 
-                        console.log(`session: ${req.session}`)
+                        jwt.sign({ userSecret: req.body.email }, tokenSecret, { expiresIn: '1800s' }, (err, generatedToken) => {
+                            if (err) {
+                                return res.status(500).send({
+                                    error: err
+                                })
+                            } else {
+                                let data = {
+                                    nome: results[0].nome,
+                                    email: results[0].email,
+                                    fone: results[0].fone,
+                                    cpf: results[0].cpf,
+                                    data_nasc: results[0].data_nasc,
+                                    token: generatedToken
+                                }
 
-                        return res.status(200).send({
-                            response: results[0],
-                            sessionToken: req.session.sessionToken
+                                return res.status(200).json(data)
+                            }
                         })
+
+                        // return res.status(200).json({
+                        //     data: obj
+                        // })
                     }
                     else {
                         return res.status(400).send({
@@ -559,22 +579,8 @@ const login = async function (req, res) {
     }
 }
 
-// const deleteUser = async function (req, res) {
-//     // const filePath = __dirname + '/../../../frontend/src/templates/main.html';
-
-//     res.write(fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'front-end', 'src', 'templates', 'main.html')))
-
-//     // console.log(filePath);
-
-//     // res.sendFile(filePath);
-//     res.end();
-// }
-
-const secret = async function (req, res) {
-    console.log(req.user)
-    res.send({
-        message: 'Segredo'
-    })
+const deleteUser = async function (req, res) {
+    return console.log(req.user, req.session)
 }
 
 export {
@@ -582,6 +588,6 @@ export {
     createUser,
     login,
     updateUser,
-    secret,
-    // deleteUser 
+    updatePassword,
+    deleteUser
 }
