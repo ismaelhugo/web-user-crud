@@ -172,3 +172,8 @@ function vBirth(birthdate) {
 
   return false;
 }
+
+function deleteUser(){
+  let user = sessionStorage.getItem("User")
+  user = JSON.stringify(user)
+}

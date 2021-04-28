@@ -27,7 +27,7 @@ const createUser = async function (req, res) {
         } else {
             /* Senha */
             // validar senha ->  precisa ter pelo menos 5 caracteres
-            const valid_password = ((newPassword).toString().length >= 5);
+            const valid_password = ((newUser.password).toString().length >= 5);
             let hashPassword = '';
 
             if (!valid_password) {
@@ -130,13 +130,9 @@ const createUser = async function (req, res) {
                                                                             error: err
                                                                         })
                                                                     } else {
-                                                                        const token = resources.generateAccessToken({ secret: newUser.email });
-                                                                        // res.json(token);
-                                                                        console.log(token)
                                                                         return res.status(201).json({
                                                                             message: 'Criado com sucesso',
                                                                             response: result,
-                                                                            accessToken: token,
                                                                         })
                                                                     }
                                                                 }
@@ -547,6 +543,7 @@ const login = async function (req, res) {
                                     fone: results[0].fone,
                                     cpf: results[0].cpf,
                                     data_nasc: results[0].data_nasc,
+                                    id: results[0].id_usuario,
                                     token: generatedToken
                                 }
 
@@ -580,7 +577,12 @@ const login = async function (req, res) {
 }
 
 const deleteUser = async function (req, res) {
-    return console.log(req.user, req.session)
+    let { id } = req.body
+
+    connection.query('SELECT * FROM usuario WHERE id = ?', [id], function (err, results, fields){
+        console.log(results[0])
+    })
+  
 }
 
 export {

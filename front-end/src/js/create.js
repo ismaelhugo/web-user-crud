@@ -57,6 +57,7 @@ function createUser() {
                 if (ajax.readyState == 4) {
                     if(ajax.status == 201){
                         var data = ajax.responseText;
+                        console.log(data)
                         alert("Cadastrado com sucesso!")
                          window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
                     }
