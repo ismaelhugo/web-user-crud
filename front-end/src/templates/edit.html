@@ -20,9 +20,12 @@
             <input type="text" id="telefone" placeholder="Telefone">
             <input type="text" id="cpf" placeholder="CPF">
             <input type="text" id="data-de-nascimento" placeholder="Data de nascimento (DD/MM/AAAA)">
+            <button onclick="updateProfile()">Atualizar dados</button>
+            <h2>Editar senha</h2>
             <input type="password" id="password" placeholder="Senha (Min. 5 dígitos)">
             <input type="password" id="password" placeholder="Confirmar senha">
-            <button onclick="update()">Atualizar dados</button>
+            <button onclick="editPassword()">Editar senha</button>
+            <hr class="solid">
             <button id="delete" onclick="deleteUser()">Excluir conta</button>
             <br>
             <p align="center"><a href="./main.html">&lt &lt Voltar para a página inicial</a></p>
