@@ -29,7 +29,6 @@ function updateProfile() {
     !(user.cpf && user.cpf != null && typeof user.cpf != undefined && user.cpf != '') &&
     !(user.birthdate && user.birthdate != null && typeof user.birthdate != undefined && user.birthdate != '') 
   ) {
-    console.log
     return alert('Preencha pelo menos 1 campo');
   }
 
@@ -125,7 +124,6 @@ function updatePassword() {
     (newPw.pw && newPw.pw != null && typeof newPw.pw != undefined && newPw.pw != '') &&
     (newPw.pwConfirm && newPw.pwConfirm != null && typeof newPw.pwConfirm != undefined && newPw.pwConfirm != '')
   ) {
-    console.log('entrou')
     const validPassword = vPassword(newPw.pw, newPw.pwConfirm);
 
     if (!validPassword) {
@@ -179,7 +177,7 @@ function deleteUser() {
     if (ajax.readyState == 4) {
       if (ajax.status == 200) {
         var data = ajax.responseText;
-        console.log(data)
+
         sessionStorage.removeItem("Token")
         sessionStorage.removeItem("UserID")
         window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"

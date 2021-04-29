@@ -8,10 +8,8 @@ if (result.error) {
 }
 
 const checkUserAuth = async function (req, res, next) {
-  console.log('checkUserAuth')
-
   let token = req.headers.authorization
-  console.log(`token: ${token}`)
+
   if (!token){
     return res.status(403).json({message: "Desculpe, mas você não está autorizado a acessar esta página."})
   }

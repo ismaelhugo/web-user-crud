@@ -6,7 +6,6 @@ import emailValidation from './emailValidation';
 import phoneValidation from './phoneValidation';
 
 import generateAccessToken from './generateAccessToken';
-import authenticateToken from './authenticateToken';
 
 
 const resources = {
@@ -16,7 +15,6 @@ const resources = {
   cpfValidation: cpfValidation,
 
   generateAccessToken: generateAccessToken,
-  authenticateToken: authenticateToken
 }
 
 export default resources;

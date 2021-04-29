@@ -4,8 +4,6 @@ function getUsersByName(inputID) {
     let name = document.getElementById(inputID).value;
     let lista = document.querySelector(".list")
 
-    console.log(name)
-
     if (!name || name == "") {
         name = 'all'
     }
@@ -26,7 +24,6 @@ function getUsersByName(inputID) {
         if (ajax.readyState == 4) {
             if (ajax.status == 200) {
                 var data = ajax.response;
-                console.log(data)
                 for (var i = 0; i < data.length; i++) {
                     lista.innerHTML += "<li>"
                         + "<p>"

@@ -46,7 +46,6 @@ const createUser = async function (req, res) {
 
             // a senha é válida! passar a senha para Hash:
             hashPassword = await bcrypt.hash(newUser.password, 10);
-            console.log(`hash: ${hashPassword}`);
 
             /* Email */
             // validar email
@@ -195,15 +194,10 @@ const list = async function (req, res) {
                     let obj;
 
                     let birth = result[i].data_nasc
-                    console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
 
                     let birthYear = parseInt(birth.getFullYear());
 
-                    console.log(`birthYear: ${birthYear}`)
-
                     let age = (currentYear - birthYear);
-
-                    console.log(`age: ${age}`)
 
                     obj = {
                         nome: result[i].nome,
@@ -212,7 +206,6 @@ const list = async function (req, res) {
                     }
 
                     fullResult.push(obj)
-                    console.log(`obj: ${obj}`)
                 }
 
                 return res.json(fullResult);
@@ -246,15 +239,10 @@ const list = async function (req, res) {
                         let obj;
 
                         let birth = result[i].data_nasc
-                        console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
 
                         let birthYear = parseInt(birth.getFullYear());
 
-                        console.log(`birthYear: ${birthYear}`)
-
                         let age = (currentYear - birthYear);
-
-                        console.log(`age: ${age}`)
 
                         obj = {
                             nome: result[i].nome,
@@ -263,7 +251,6 @@ const list = async function (req, res) {
                         }
 
                         fullResult.push(obj)
-                        console.log(`obj: ${obj}`)
                     }
 
                     return res.json(fullResult);
@@ -288,7 +275,6 @@ const updateUser = async function (req, res) {
 
         /* Nome */
         if (newInfo.name && newInfo.name != null && typeof newInfo.name != undefined) {
-            console.log(`atualizar nome`);
             connection.query('UPDATE usuario SET nome = (?) WHERE id_usuario = (?)',
                 [newInfo.name, userID],
                 (err, result) => {
@@ -307,11 +293,9 @@ const updateUser = async function (req, res) {
 
         /* Email */
         if (newInfo.email && newInfo.email != null && typeof newInfo.email != undefined) {
-            console.log(`atualizar email`);
 
             // validação do email
             const valid_email = await resources.emailValidation(newInfo.email);
-            console.log(`valid_email: ${valid_email}`);
 
             if (!valid_email) {
                 return res.status(400).send({
@@ -357,8 +341,6 @@ const updateUser = async function (req, res) {
 
         /* Telefone */
         if (newInfo.phone && newInfo.phone != null && typeof newInfo.phone != undefined) {
-            console.log(`atualizar telefone`);
-
             // validação do telefone
             const valid_phone = resources.phoneValidation(newInfo.phone);
 
@@ -388,8 +370,6 @@ const updateUser = async function (req, res) {
 
         /* Data de Nascimento */
         if (newInfo.birthdate && newInfo.birthdate != null && typeof newInfo.birthdate != undefined) {
-            console.log(`atualizar data de nascimento`);
-
             // verifica se a data é válida
             const valid_birthdate = resources.birthdateValidation(newInfo.birthdate);
 
@@ -418,8 +398,6 @@ const updateUser = async function (req, res) {
 
         /* CPF */
         if (newInfo.cpf && newInfo.cpf != null && typeof newInfo.cpf != undefined) {
-            console.log(`atualizar cpf`);
-
             // tirar outros caracteres, deixa só os números
             const cpf = newInfo.cpf.toString().replace(/[^\d]+/g, '');
 
@@ -488,8 +466,6 @@ const updatePassword = async function (req, res) {
         const newPassword = req.body.pw
         const confirmPw = req.body.pwConfirm
 
-        console.log(`new: ${newPassword}, conf: ${confirmPw}`);
-
         if (
             (newPassword && newPassword != null && typeof newPassword != undefined && newPassword != '')&&
             (confirmPw && confirmPw != null && typeof confirmPw != undefined && confirmPw != '')
@@ -505,7 +481,6 @@ const updatePassword = async function (req, res) {
                 // senha válida
                 let hashPassword = '';
                 hashPassword = await bcrypt.hash(newPassword, 10);
-                console.log(`hash: ${hashPassword}`);
 
                 // atualizar o usuário
                 connection.query('UPDATE usuario SET senha = (?) WHERE id_usuario = (?)',
@@ -558,7 +533,6 @@ const login = async function (req, res) {
             }
             else if(results[0].senha){
                 bcrypt.compare(password, results[0].senha, function (error, result) {
-                    console.log(`result bcy = ${result}`)
                     if (result) {
                         jwt.sign({ userSecret: req.body.email }, tokenSecret, { expiresIn: '1800s' }, (err, generatedToken) => {
                             if (err) {
@@ -606,7 +580,6 @@ const deleteUser = async function (req, res) {
                     "mensagem": "Erro ao excluir o usuario"
                 })
             } else {
-                console.log(results)
                 res.status(200).send({
                     "mensagem": "Usuario excluido com sucesso"
                 })
