@@ -11,6 +11,7 @@ const checkUserAuth = async function (req, res, next) {
   console.log('checkUserAuth')
 
   let token = req.headers.authorization
+  console.log(`token: ${token}`)
   if (!token){
     return res.status(403).json({message: "Desculpe, mas você não está autorizado a acessar esta página."})
   }
@@ -20,7 +21,7 @@ const checkUserAuth = async function (req, res, next) {
     let decoded = jwt.verify(token, process.env.TOKEN_SECRET)
     next()
   } catch (err) {
-    return res.status(401).json({err: "Login não autorizado"})
+    return res.status(401).json({err: err, message: "Login não autorizado"})
   }
 }
 

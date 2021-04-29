@@ -1,17 +1,11 @@
 function updateProfile() {
   let user = {
-    name: document.getElementById("name"),
-    email: document.getElementById("email"),
-    phone: document.getElementById("phone"),
-    cpf: document.getElementById("cpf"),
-    birthdate: document.getElementById("birthdate"),
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    cpf: document.getElementById("cpf").value,
+    birthdate: document.getElementById("birthdate").value,
   }
-
-  console.log(`name: ${user.name.value}`)
-  console.log(`email: ${user.email.value}`)
-  console.log(`phone: ${user.phone.value}`)
-  console.log(`cpf: ${user.cpf.value}`)
-  console.log(`birthdate: ${user.birthdate.value}`)
 
   let update = {
     name: null,
@@ -19,102 +13,134 @@ function updateProfile() {
     phone: null,
     cpf: null,
     birthdate: null,
+    userID: null
   }
 
-  if (user.name && user.name != null && typeof user.name != undefined) {
-    const validName = vName(user.name.value)
+  if (user.name && user.name != null && typeof user.name != undefined && user.name != '') {
+    const validName = vName(user.name);
 
     if (!validName) {
-      return alert('Nome inváldo')
+      return alert('Nome inváldo');
     } else {
-      update.name = user.name.value
+      update.name = user.name;
     }
   }
 
-  if (user.email && user.email != null && typeof user.email != undefined) {
-    const validEmail = vEmail(user.email.value)
+  if (user.email && user.email != null && typeof user.email != undefined && user.email != '') {
+    const validEmail = vEmail(user.email);
 
     if (!validEmail) {
-      return alert('Email inváldo')
+      return alert('Email inváldo');
     } else {
-      update.email = user.email.value
+      update.email = user.email;
     }
   }
 
-  if (user.phone && user.phone != null && typeof user.phone != undefined) {
-    const validPhone = vPhone(user.phone.value)
+  if (user.phone && user.phone != null && typeof user.phone != undefined && user.phone != '') {
+    const validPhone = vPhone(user.phone);
 
     if (!validPhone) {
-      return alert('Telefone inváldo')
+      return alert('Telefone inváldo');
     } else {
-      update.phone = user.phone.value
+      update.phone = user.phone;
     }
   }
 
-  if (user.cpf && user.cpf != null && typeof user.cpf != undefined) {
-    // tirar outros caracteres, deixa só os números
-    cpf = user.cpf.value
-    cpf = cpf.toString().replace(/[^\d]+/g, '');
+  if (user.cpf && user.cpf != null && typeof user.cpf != undefined && user.cpf != '') {
+    cpf = user.cpf.toString().replace(/[^\d]+/g, '');
 
-    const validCPF = vCPF(cpf)
+    const validCPF = vCPF(cpf);
 
     if (!validCPF) {
-      return alert('CPF inváldo')
+      return alert('CPF inváldo');
     } else {
-      update.cpf = cpf
+      update.cpf = cpf;
     }
   }
 
-  if (user.birthdate && user.birthdate != null && typeof user.birthdate != undefined) {
-    const validBirth = vBirth(user.birthdate.value)
+  if (user.birthdate && user.birthdate != null && typeof user.birthdate != undefined && user.birthdate != '') {
+    const validBirth = vBirth(user.birthdate);
 
     if (!validBirth) {
-      return alert('Data de Nascimento inválda')
+      return alert('Data de Nascimento inválda');
     } else {
-      update.email = validBirth
+      update.birthdate = validBirth;
     }
   }
-
-  console.log(`update: ${update}`)
 
   let ajax = new XMLHttpRequest();
   let baseURL = "http://localhost:3000"
 
   // ajax.responseType = "json"
 
-  ajax.open("PUT", baseURL + '/editar-perfil', true)
+  const userID = sessionStorage.getItem("UserID");
+
+  ajax.open("PATCH", baseURL + `/editar-perfil/${userID}`, true)
 
   ajax.setRequestHeader("Content-Type", "application/json");
 
   const token = sessionStorage.getItem("Token");
   ajax.setRequestHeader("authorization", token);
 
-
-  newInfo = JSON.stringify(update)
+  const newInfo = JSON.stringify(update)
   ajax.send(newInfo);
 
-
   ajax.onreadystatechange = function () {
-    if (ajax.readyState == 4 && ajax.status == 200) {
-      ajax.onreadystatechange = function () {
-        const userID = sessionStorage.getItem("UserID");       
-        ajax.send(userID);
-
-        if (ajax.readyState == 4) {
-          if (ajax.status == 201) {
-            var data = ajax.responseText;
-            alert("Atualizado com sucesso!")
-            // window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
-          }
-          else if (ajax.status == 400) {
-            alert(ajax.responseText)
-          }
-          else if (ajax.status == 500) {
-            alert(ajax.responseText)
-          }
-        }
+    if (ajax.readyState == 4) {
+      if (ajax.status == 201) {
+        var data = ajax.responseText;
+        alert("Atualizado com sucesso!")
+        window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
+      }
+      else if (ajax.status == 400) {
+        alert(ajax.responseText)
+      }
+      else if (ajax.status == 500) {
+        alert(ajax.responseText)
       }
     }
+  }
+}
+
+function updatePassword() {
+  let newPw = {
+    pw: document.getElementById("pw").value,
+    pwConfirm: document.getElementById("pwConfirm").value,
+  }
+
+  if (
+    (newPw.pw && newPw.pw != null && typeof newPw.pw != undefined && newPw.pw != '')
+    &&
+    (newPw.pwConfirm && newPw.pwConfirm != null && typeof newPw.pwConfirm != undefined && newPw.pwConfirm != '')
+  ) {
+
+    const validPassword = vPassword(newPw.pw, newPw.pwConfirm);
+
+    if (!validPassword) {
+      return alert('Senha inválda');
+
+    } else {
+      // senha válida
+
+      let ajax = new XMLHttpRequest();
+      let baseURL = "http://localhost:3000"
+
+      const userID = sessionStorage.getItem("UserID");
+
+      ajax.open("PATCH", baseURL + `/atualizar-senha/${userID}`, true)
+
+      ajax.setRequestHeader("Content-Type", "application/json");
+
+      const token = sessionStorage.getItem("Token");
+      ajax.setRequestHeader("authorization", token);
+
+      const newPassword = JSON.stringify(newPw)
+      ajax.send(newPassword);
+
+      
+    }
+  } else {
+    return alert('Preencha todos os campos');
   }
 }
 
@@ -192,7 +218,7 @@ function vBirth(birthdate) {
   return false;
 }
 
-function deleteUser(){
+function deleteUser() {
   let user = sessionStorage.getItem("User")
   user = JSON.stringify(user)
 }

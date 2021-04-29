@@ -9,8 +9,8 @@ router.post('/cadastrar', userController.createUser);
 router.post('/login', userController.login);
 
 // Restritas aos usuários
-router.put('/editar-perfil', checkUserAuth, userController.updateUser);
-router.put('/atualizar-senha', checkUserAuth, userController.updatePassword);
+router.patch('/editar-perfil/:userID', checkUserAuth, userController.updateUser);
+router.patch('/atualizar-senha/:userID', checkUserAuth, userController.updatePassword);
 router.get('/listar-usuarios/:name', userController.list);
 router.delete('/delete',checkUserAuth,  userController.deleteUser);
 
