@@ -12,6 +12,6 @@ router.post('/login', userController.login);
 router.patch('/editar-perfil/:userID', checkUserAuth, userController.updateUser);
 router.patch('/atualizar-senha/:userID', checkUserAuth, userController.updatePassword);
 router.get('/listar-usuarios/:name', userController.list);
-router.delete('/delete',checkUserAuth,  userController.deleteUser);
+router.delete('/delete/:id', checkUserAuth, userController.deleteUser);
 
 export default router;

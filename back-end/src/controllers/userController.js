@@ -232,13 +232,10 @@ const list = async function (req, res) {
                     })
                 }
 
-                console.log(`result: ${result.length}`)
-
                 if (result.length == 0 || !result) {
                     return res.status(400).send({
                         message: 'Nenhum usuário encontrado.'
                     })
-
                 } else {
                     let i = 0;
                     let fullResult = [];
@@ -549,7 +546,17 @@ const login = async function (req, res) {
 
     if (email && password) {
         connection.query('SELECT * FROM usuario WHERE email = ?', [email], function (err, results, fields) {
-            if (results[0].senha) {
+            if(err){
+                return res.status(500).send({
+                    "mensagem": "Erro interno. Tente mais tarde"
+                });
+            }
+            else if(results.length < 1 || !results || results == null){
+                return res.status(400).send({
+                    "mensagem": "Nenhum usuário encontrado com essas credenciais."
+                });
+            }
+            else if(results[0].senha){
                 bcrypt.compare(password, results[0].senha, function (error, result) {
                     if (result) {
                         jwt.sign({ userSecret: req.body.email }, tokenSecret, { expiresIn: '1800s' }, (err, generatedToken) => {
@@ -572,11 +579,6 @@ const login = async function (req, res) {
                             }
                         })
                     }
-                    else {
-                        return res.status(400).send({
-                            "mensagem": "Nenhum usuário encontrado com essas credenciais."
-                        });
-                    }
                 })
             }
         });
@@ -589,14 +591,25 @@ const login = async function (req, res) {
 
 // Deletar Usuario
 const deleteUser = async function (req, res) {
-    let { id } = req.body
 
-    connection.query('SELECT * FROM usuario WHERE id = ?', [id], function (err, results, fields) {
-        console.log(results[0])
-    })
+    const { id } = req.params;
 
+    if(id){
+        connection.query('DELETE FROM usuario WHERE id_usuario = ?', [id], function (err, results, fields) {
+            if(err){
+                res.status(500).send({
+                    "mensagem": "Erro ao excluir o usuario"
+                })
+            } else {
+                console.log(results)
+                res.status(200).send({
+                    "mensagem": "Usuario excluido com sucesso"
+                })
+            }
+        }
+        )
+    }
 }
-
 export {
     list,
     createUser,
