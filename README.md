@@ -1,2 +1,2 @@
-# web-user-crud
-Trabalho de web, no qual deverá ser implementado um CRUD de usuários usando Node.js.
+# Trabalho final de Web 1
+Foi implementado uma API em node.js e um front-end utilizando html, css e javascript. 
