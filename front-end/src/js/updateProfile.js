@@ -188,6 +188,17 @@ function deleteUser() {
   }
 }
 
+
+function clean() {
+  document.getElementById('name').value = "";
+  document.getElementById('email').value = "";
+  document.getElementById('phone').value = "";
+  document.getElementById('cpf').value = "";
+  document.getElementById('birthdate').value = "";
+  document.getElementById('password').value = "";
+  document.getElementById('passwordConfirm').value = "";
+}
+
 //Validações
 function vName(name) {
   if (name.length < 50) {
