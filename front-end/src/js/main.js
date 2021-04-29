@@ -1,6 +1,10 @@
+window.onload = getSession;
+
 function getUsersByName(inputID) {
     let name = document.getElementById(inputID).value;
     let lista = document.querySelector(".list")
+
+    console.log(name)
 
     if (!name || name == "") {
         name = 'all'
@@ -45,7 +49,13 @@ function getUsersByName(inputID) {
 }
 
 function logout(){
-    sessionStorage.removeItem("User");
+    sessionStorage.removeItem("UserID");
     sessionStorage.removeItem("Token");
     window.location.href = 'http://127.0.0.1:5500/front-end/src/templates/login.html'
+}
+
+function getSession() {
+    if (!sessionStorage.getItem("Token")) {
+        window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
+    }
 }

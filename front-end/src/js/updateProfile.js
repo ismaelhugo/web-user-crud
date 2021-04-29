@@ -1,3 +1,6 @@
+const ajax = new XMLHttpRequest();
+const baseURL = "http://localhost:3000"
+
 function updateProfile() {
   let user = {
     name: document.getElementById("name").value,
@@ -61,9 +64,6 @@ function updateProfile() {
   //     return alert('Senha inválda')
   //   }
   // }
-
-  let ajax = new XMLHttpRequest();
-  let baseURL = "http://localhost:3000"
 
   // ajax.responseType = "json"
 
@@ -174,6 +174,24 @@ function vBirth(birthdate) {
 }
 
 function deleteUser(){
-  let user = sessionStorage.getItem("User")
-  user = JSON.stringify(user)
-}
+  let id = sessionStorage.getItem("UserID")
+  let token = sessionStorage.getItem("Token")
+  
+  ajax.open("DELETE", baseURL + `/delete/${id}`, true)
+  ajax.setRequestHeader("Content-Type", "application/json");
+  ajax.setRequestHeader("Authorization", token);
+
+  ajax.send();
+      ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+          if (ajax.status == 200) {
+            var data = ajax.responseText;
+            console.log(data)
+            sessionStorage.removeItem("Token", "UserID")
+            window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
+          } else {
+            alert(ajax.responseText)
+          }
+        }
+      }
+  }

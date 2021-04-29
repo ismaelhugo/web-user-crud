@@ -218,21 +218,28 @@ const list = async function (req, res) {
                     })
                 }
 
-                if (result.length = 0 || !result) {
+                if (result.length == 0 || !result) {
                     return res.status(400).send({
                         message: 'Nenhum usuário encontrado.'
                     })
                 } else {
-                    // console.log('ajdia', result[0])
-                    // console.log(`result[0].lenght: ${result[0].lenght}`)
-                    // console.log(`result.lenght: ${result.lenght}`)
 
                     let i = 0;
                     let fullResult = [];
+                    let date = new Date
+                    let currentYear = parseInt(date.getFullYear());
 
                     for (i == 0; i < result.length; i++) {
                         let obj;
-                        let age = (Date.now()) - result[i].data_nasc;
+
+                        let birth = result[i].data_nasc
+                        console.log(`result[i].data_nasc: ${result[i].data_nasc}`)
+
+                        let birthYear = parseInt(birth.getFullYear());
+
+                        console.log(`birthYear: ${birthYear}`)
+
+                        let age = (currentYear - birthYear);
 
                         console.log(`age: ${age}`)
 
@@ -246,7 +253,7 @@ const list = async function (req, res) {
                         console.log(`obj: ${obj}`)
                     }
 
-                    return res.status(200).json(fullResult)
+                    return res.json(fullResult);
                 }
             }
         )
@@ -525,12 +532,19 @@ const login = async function (req, res) {
 
     if (email && password) {
         connection.query('SELECT * FROM usuario WHERE email = ?', [email], function (err, results, fields) {
-            if (results[0].senha) {
+            if(err){
+                return res.status(500).send({
+                    "mensagem": "Erro interno. Tente mais tarde"
+                });
+            }
+            else if(results.length < 1 || !results || results == null){
+                return res.status(400).send({
+                    "mensagem": "Nenhum usuário encontrado com essas credenciais."
+                });
+            }
+            else if(results[0].senha){
                 bcrypt.compare(password, results[0].senha, function (error, result) {
                     if (result) {
-                        // const token = resources.generateAccessToken({ userSecret: req.body.email });
-                        // req.session.sessionToken = token
-
                         jwt.sign({ userSecret: req.body.email }, tokenSecret, { expiresIn: '1800s' }, (err, generatedToken) => {
                             if (err) {
                                 return res.status(500).send({
@@ -555,11 +569,6 @@ const login = async function (req, res) {
                         //     data: obj
                         // })
                     }
-                    else {
-                        return res.status(400).send({
-                            "mensagem": "Nenhum usuário encontrado com essas credenciais."
-                        });
-                    }
                 })
             }
         });
@@ -577,14 +586,25 @@ const login = async function (req, res) {
 }
 
 const deleteUser = async function (req, res) {
-    let { id } = req.body
 
-    connection.query('SELECT * FROM usuario WHERE id = ?', [id], function (err, results, fields){
-        console.log(results[0])
-    })
-  
+    const { id } = req.params;
+
+    if(id){
+        connection.query('DELETE FROM usuario WHERE id_usuario = ?', [id], function (err, results, fields) {
+            if(err){
+                res.status(500).send({
+                    "mensagem": "Erro ao excluir o usuario"
+                })
+            } else {
+                console.log(results)
+                res.status(200).send({
+                    "mensagem": "Usuario excluido com sucesso"
+                })
+            }
+        }
+        )
+    }
 }
-
 export {
     list,
     createUser,
