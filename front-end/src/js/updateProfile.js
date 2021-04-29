@@ -1,3 +1,5 @@
+window.onload = getSession;
+
 const ajax = new XMLHttpRequest();
 const baseURL = "http://localhost:3000"
 
@@ -274,4 +276,8 @@ function vBirth(birthdate) {
   return false;
 }
 
-
+function getSession() {
+  if (!sessionStorage.getItem("Token")) {
+      window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
+  }
+}
