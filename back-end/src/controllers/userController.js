@@ -6,6 +6,12 @@ const tokenSecret = process.env.TOKEN_SECRET;
 
 import resources from '../resources';
 
+function vPassword(password, passwordConfirm) {
+    if (password.length >= 5 && password === passwordConfirm) {
+        return true
+    }
+}
+
 // Criar Usuário
 const createUser = async function (req, res) {
     try {
@@ -482,23 +488,24 @@ const updatePassword = async function (req, res) {
     try {
         const { userID } = req.params;
 
-        const newPassword = req.body.password
+        const newPassword = req.body.pw
+        const confirmPw = req.body.pwConfirm
 
-        if (newPassword && newPassword != null && typeof newPassword != undefined) {
-            console.log(`atualizar senha`);
+        console.log(`new: ${newPassword}, conf: ${confirmPw}`);
 
-            // validar senha ->  precisa ter pelo menos 5 caracteres
-            const valid_password = ((newPassword).toString().length >= 5);
-            let hashPassword = '';
+        if (
+            (newPassword && newPassword != null && typeof newPassword != undefined && newPassword != '')
+            &&
+            (confirmPw && confirmPw != null && typeof confirmPw != undefined && confirmPw != '')
+        ) {
+            const validPassword = vPassword(newPassword, confirmPw);
 
-            if (!valid_password) {
-                return res.status(400).send({
-                    message: 'Senha inválida',
-                    response: null
-                })
+            if (!validPassword) {
+                return alert('Senha inválda');
 
             } else {
-                // a senha é válida! passar a senha para Hash:
+                // senha válida
+                let hashPassword = '';
                 hashPassword = await bcrypt.hash(newPassword, 10);
                 console.log(`hash: ${hashPassword}`);
 
@@ -513,12 +520,18 @@ const updatePassword = async function (req, res) {
                             })
 
                         } else {
-                            console.log(`atualizou a senha!`);
+                            return res.status(200).send({
+                                message: 'Atualizado com sucesso'
+                            })
                         }
                     }
                 )
-
             }
+
+        } else {
+            return res.status(400).send({
+                message: "Todos os campos devem ser preenchidos"
+            })
         }
 
     } catch (error) {

@@ -87,7 +87,7 @@ function updateProfile() {
 
   ajax.onreadystatechange = function () {
     if (ajax.readyState == 4) {
-      if (ajax.status == 201) {
+      if (ajax.status == 200) {
         var data = ajax.responseText;
         alert("Atualizado com sucesso!")
         window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
@@ -137,8 +137,23 @@ function updatePassword() {
       const newPassword = JSON.stringify(newPw)
       ajax.send(newPassword);
 
-      
+      ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+          if (ajax.status == 200) {
+            var data = ajax.responseText;
+            alert("Atualizado com sucesso!")
+            window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
+          }
+          else if (ajax.status == 400) {
+            alert(ajax.responseText)
+          }
+          else if (ajax.status == 500) {
+            alert(ajax.responseText)
+          }
+        }
+      }
     }
+    
   } else {
     return alert('Preencha todos os campos');
   }
