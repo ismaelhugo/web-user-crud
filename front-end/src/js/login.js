@@ -19,20 +19,23 @@ function login() {
         ajax.onreadystatechange = function () {
 
             if (ajax.readyState == 4) {
-                if(ajax.status == 200){
+                if (ajax.status == 200) {
                     var data = ajax.responseText;
                     let dataJson = JSON.parse(data);
-    
+
                     sessionStorage.setItem("UserID", dataJson.id);
-    
+
                     sessionStorage.setItem("Token", dataJson.token);
-    
+
                     window.location.href = "http://127.0.0.1:5500/front-end/src/templates/main.html"
                 }
-                else if(ajax.status == 400){
+                else if (ajax.status == 400) {
+                    alert("Senha Incorreta")
+                }
+                else if (ajax.status == 404) {
                     alert("Nenhum usuario com essas credenciais")
                 }
-                else if(ajax.status == 500){
+                else if (ajax.status == 500) {
                     alert("Erro no server. Tente mais tarde")
                 }
             }

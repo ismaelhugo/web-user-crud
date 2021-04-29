@@ -491,14 +491,15 @@ const updatePassword = async function (req, res) {
         console.log(`new: ${newPassword}, conf: ${confirmPw}`);
 
         if (
-            (newPassword && newPassword != null && typeof newPassword != undefined && newPassword != '')
-            &&
+            (newPassword && newPassword != null && typeof newPassword != undefined && newPassword != '')&&
             (confirmPw && confirmPw != null && typeof confirmPw != undefined && confirmPw != '')
         ) {
             const validPassword = vPassword(newPassword, confirmPw);
 
             if (!validPassword) {
-                return alert('Senha inválda');
+                return res.status(400).send({
+                    message: "Senha inválida"
+                })
 
             } else {
                 // senha válida
@@ -530,7 +531,6 @@ const updatePassword = async function (req, res) {
                 message: "Todos os campos devem ser preenchidos"
             })
         }
-
     } catch (error) {
         return res.status(500).send({
             error: error,
@@ -552,12 +552,13 @@ const login = async function (req, res) {
                 });
             }
             else if(results.length < 1 || !results || results == null){
-                return res.status(400).send({
+                return res.status(404).send({
                     "mensagem": "Nenhum usuário encontrado com essas credenciais."
                 });
             }
             else if(results[0].senha){
                 bcrypt.compare(password, results[0].senha, function (error, result) {
+                    console.log(`result bcy = ${result}`)
                     if (result) {
                         jwt.sign({ userSecret: req.body.email }, tokenSecret, { expiresIn: '1800s' }, (err, generatedToken) => {
                             if (err) {
@@ -577,6 +578,10 @@ const login = async function (req, res) {
 
                                 return res.status(200).json(data)
                             }
+                        })
+                    } else {
+                        return res.status(400).send({
+                           message: "Senha incorreta"
                         })
                     }
                 })

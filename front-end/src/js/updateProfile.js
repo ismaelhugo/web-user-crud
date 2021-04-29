@@ -19,6 +19,19 @@ function updateProfile() {
     userID: null
   }
 
+  // todos vazios
+  if(
+    !(user.name && user.name != null && typeof user.name != undefined && user.name != '') &&
+    !(user.email && user.email != null && typeof user.email != undefined && user.email != '') &&
+    !(user.phone && user.phone != null && typeof user.phone != undefined && user.phone != '') &&
+    !(user.cpf && user.cpf != null && typeof user.cpf != undefined && user.cpf != '') &&
+    !(user.birthdate && user.birthdate != null && typeof user.birthdate != undefined && user.birthdate != '') 
+  ) {
+    console.log
+    return alert('Preencha pelo menos 1 campo');
+  }
+
+
   if (user.name && user.name != null && typeof user.name != undefined && user.name != '') {
     const validName = vName(user.name);
 
@@ -71,8 +84,6 @@ function updateProfile() {
     }
   }
 
-  // ajax.responseType = "json"
-
   const userID = sessionStorage.getItem("UserID");
 
   ajax.open("PATCH", baseURL + `/editar-perfil/${userID}`, true)
@@ -104,27 +115,21 @@ function updateProfile() {
 
 function updatePassword() {
   let newPw = {
-    pw: document.getElementById("pw").value,
-    pwConfirm: document.getElementById("pwConfirm").value,
+    pw: document.getElementById("password").value,
+    pwConfirm: document.getElementById("passwordConfirm").value,
   }
 
   if (
-    (newPw.pw && newPw.pw != null && typeof newPw.pw != undefined && newPw.pw != '')
-    &&
+    (newPw.pw && newPw.pw != null && typeof newPw.pw != undefined && newPw.pw != '') &&
     (newPw.pwConfirm && newPw.pwConfirm != null && typeof newPw.pwConfirm != undefined && newPw.pwConfirm != '')
   ) {
-
+    console.log('entrou')
     const validPassword = vPassword(newPw.pw, newPw.pwConfirm);
 
     if (!validPassword) {
       return alert('Senha inválda');
-
     } else {
       // senha válida
-
-      let ajax = new XMLHttpRequest();
-      let baseURL = "http://localhost:3000"
-
       const userID = sessionStorage.getItem("UserID");
 
       ajax.open("PATCH", baseURL + `/atualizar-senha/${userID}`, true)
@@ -153,12 +158,37 @@ function updatePassword() {
         }
       }
     }
-    
+
   } else {
     return alert('Preencha todos os campos');
   }
 }
 
+function deleteUser() {
+  let id = sessionStorage.getItem("UserID")
+  let token = sessionStorage.getItem("Token")
+
+  ajax.open("DELETE", baseURL + `/delete/${id}`, true)
+  ajax.setRequestHeader("Content-Type", "application/json");
+  ajax.setRequestHeader("Authorization", token);
+
+  ajax.send();
+  ajax.onreadystatechange = function () {
+    if (ajax.readyState == 4) {
+      if (ajax.status == 200) {
+        var data = ajax.responseText;
+        console.log(data)
+        sessionStorage.removeItem("Token")
+        sessionStorage.removeItem("UserID")
+        window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
+      } else {
+        alert(ajax.responseText)
+      }
+    }
+  }
+}
+
+//Validações
 function vName(name) {
   if (name.length < 50) {
     return true
@@ -233,25 +263,4 @@ function vBirth(birthdate) {
   return false;
 }
 
-function deleteUser(){
-  let id = sessionStorage.getItem("UserID")
-  let token = sessionStorage.getItem("Token")
-  
-  ajax.open("DELETE", baseURL + `/delete/${id}`, true)
-  ajax.setRequestHeader("Content-Type", "application/json");
-  ajax.setRequestHeader("Authorization", token);
 
-  ajax.send();
-      ajax.onreadystatechange = function () {
-        if (ajax.readyState == 4) {
-          if (ajax.status == 200) {
-            var data = ajax.responseText;
-            console.log(data)
-            sessionStorage.removeItem("Token", "UserID")
-            window.location.href = "http://127.0.0.1:5500/front-end/src/templates/login.html"
-          } else {
-            alert(ajax.responseText)
-          }
-        }
-      }
-  }
